@@ -93,16 +93,6 @@ void QEngine::updateFrameTimeStart(){
     glfwPollEvents();
 }
 
-
-
-void QEngine::uploadVerticesIndices(const std::vector<uint32_t> Indices, const std::vector<Vertex> Vertices){
-    std::cout << "Sorry uploadVerticesIndices fonction is not available yet, we are working on it\n";
-}
-
-void QEngine::drawMod(int mod){
-    drawModSet = mod;
-}
-
 void QEngine::setMaxVertciesIndicesSize(VkDeviceSize maxsize){
     stagingBufferSize = maxsize;
     stagingBuffer2Size = maxsize;

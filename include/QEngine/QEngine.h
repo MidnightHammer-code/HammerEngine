@@ -66,7 +66,7 @@ public:
 
     int cameraModeInit;
 
-    int drawModSet;
+    int drawMod;
 
     std::string vertShaderPath;
 
@@ -75,8 +75,6 @@ public:
     float cameraFallSpeed = 0.01;
 
     void setMaxVertciesIndicesSize(VkDeviceSize maxsize);
-
-    void drawMod(int mod);
 
     void cameraMode(int mode);
 
@@ -103,8 +101,6 @@ public:
     void drawFrame();
 
     void updateFrameTimeStart();
-
-    void uploadVerticesIndices(const std::vector<uint32_t> indices, const std::vector<Vertex> vertices);
 
     bool triangleMode = false;
 
