@@ -18,7 +18,7 @@ We are looking for contributors! Since we are in the alpha/beta stage, now is th
 
 1. Vulkan pipeline optimizations
 2. Extended physics/collision features
-3. Speparte the fonctions in sperate files.
+3. Speparte the fonctions from HammerEngine.cpp into sperate files.
 
 # How to use?
 
