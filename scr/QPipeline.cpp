@@ -38,10 +38,10 @@ void QEngine::createGraphicsPipeline() {
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 
-    if (drawModSet == 0)
+    if (drawMod == 0)
     {
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-    } else if(drawModSet == 1){
+    } else if(drawMod == 1){
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
     }
     // VK_PRIMITIVE_TOPOLOGY_LINE_STRIP//VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP
