@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 project(voxel_Engine VERSION 2.0)
 
 set(SOURCE_FILES
-    test4.cpp
+    test.cpp
     ../../scr/HammerEngine.cpp
     ../../scr/HammerUtility.cpp
     ../../scr/HammerCamera.cpp
