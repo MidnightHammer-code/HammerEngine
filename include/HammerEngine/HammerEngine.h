@@ -72,6 +72,8 @@ public:
 
     std::string fragShaderPath;
 
+    float renderDistance = 512.0f;
+
     float cameraFallSpeed = 0.01;
 
     void setMaxVertciesIndicesSize(VkDeviceSize maxsize);

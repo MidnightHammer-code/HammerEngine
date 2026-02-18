@@ -168,6 +168,7 @@ int main() {
     Engine.cameraSpeed = 0.1;
     Engine.drawMod(0);
     Engine.triangleMode = true;
+    Engine.renderDistance = 1024.0f;
 
     Engine.initWindow();
     Engine.initVulkan();

@@ -71,7 +71,8 @@ int main() {
     Engine.cameraMode(0);
     Engine.cameraSpeed = 0.1;
     Engine.drawMod(0);
-    Engine.triangleMode = true;
+    Engine.triangleMode = false;
+    Engine.renderDistance = 64.0f;
 
     Engine.initWindow();
     Engine.initVulkan();
@@ -83,7 +84,7 @@ int main() {
         HammerRectCubeF cube{0,0,0, 1,1,1};
         HammerRectCubeF camera{Engine.cameraPosition.x,Engine.cameraPosition.y-1,Engine.cameraPosition.z, 1,1,1};
 
-        Engine.updateCameraDefaultGravety3D(camera.QRectCollideRectCubeF(cube));
+        Engine.updateCameraDefaultGravety3D(camera.HammerRectCollideRectCubeF(cube));
         Engine.drawFrame();
 
         Engine.updateFrameTimeEnd();

@@ -1,10 +1,8 @@
 #include "../../include/HammerEngine/HammerEngine.h"
 #include "../../include/HammerEngine/HammerRect.h"
-#include <chrono>
 #include <glm/ext/vector_float3.hpp>
 #include <vector>
 #include <glm/glm.hpp>
-#include <iostream>
 
 // === Entry Point ===
 int main() {
@@ -48,6 +46,7 @@ int main() {
     Engine.cameraSpeed = 0.1;
     Engine.drawMod(0);
     Engine.triangleMode = true;
+    Engine.renderDistance = 16.0f;
 
     Engine.initWindow();
     Engine.initVulkan();

@@ -28,6 +28,7 @@ int main() {
     Engine.cameraMode(0);
     Engine.cameraSpeed = 0.1;
     Engine.drawMod(0);
+    Engine.renderDistance = 16.0f;
 
     Engine.initWindow();
     Engine.initVulkan();
