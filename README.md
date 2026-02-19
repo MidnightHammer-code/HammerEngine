@@ -20,7 +20,7 @@ Developer Friendly: Designed for rapid prototyping without sacrificing performan
 # Want to contribute?
 We are looking for contributors! Since we are in the alpha/beta stage, now is the best time to help shape the engine's architecture. We are especially looking for help with:
 
-1. Vulkan pipeline optimizations
+1. Optimizing the Engine even more for low-end machines.
 2. Extended physics/collision features.
 3. Separate the functions from HammerEngine.cpp into separate files.
 4. Add a class for creating pipelines and managing them.
