@@ -24,6 +24,7 @@ We are looking for contributors! Since we are in the alpha/beta stage, now is th
 2. Extended physics/collision features
 3. Separate the functions from HammerEngine.cpp into separate files.
 4. Add a class for creating pipelines and managing them.
+5. Add a class for creating draw calls (not Render pass)
 
 # How to use?
 
