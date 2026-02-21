@@ -42,10 +42,10 @@ int main() {
     Engine.WindowHeight = 1000;
     Engine.texturePath = "textures/texture.png";
     Engine.cameraPosition = glm::vec3(0,0,2);
-    Engine.cameraMode(0);
+    Engine.cameraMode2dOr3d = 0;
     Engine.cameraSpeed = 0.1;
-    Engine.drawMod(0);
-    Engine.triangleMode = true;
+    Engine.renderTriangleMod = 0;
+    Engine.triangleRender2SideMode = true;
     Engine.renderDistance = 16.0f;
 
     Engine.initWindow();

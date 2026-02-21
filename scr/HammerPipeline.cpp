@@ -38,10 +38,10 @@ void HammerEngine::createGraphicsPipeline() {
     VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 
-    if (drawModSet == 0)
+    if (renderTriangleMod == 0)
     {
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-    } else if(drawModSet == 1){
+    } else if(renderTriangleMod == 1){
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
     }
     // VK_PRIMITIVE_TOPOLOGY_LINE_STRIP//VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP
@@ -60,9 +60,9 @@ void HammerEngine::createGraphicsPipeline() {
     rasterizer.lineWidth = 1.0f;
 
 
-    if(!triangleMode){
+    if(!triangleRender2SideMode){
         rasterizer.cullMode = VK_CULL_MODE_NONE;
-    } else if (triangleMode){
+    } else if (triangleRender2SideMode){
         rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
     }
 

@@ -68,10 +68,10 @@ int main() {
     Engine.WindowWidth = 900;
     Engine.WindowHeight = 900;
     Engine.texturePath = "textures/texture.png";
-    Engine.cameraMode(0);
+    Engine.cameraMode2dOr3d = 0;
     Engine.cameraSpeed = 0.1;
-    Engine.drawMod(0);
-    Engine.triangleMode = false;
+    Engine.renderTriangleMod = 0;
+    Engine.triangleRender2SideMode = false;
     Engine.renderDistance = 64.0f;
 
     Engine.initWindow();

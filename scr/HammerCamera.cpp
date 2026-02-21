@@ -1,9 +1,5 @@
 #include "../include/HammerEngine/HammerEngine.h"
 
-void HammerEngine::cameraMode(int mode){
-    cameraModeInit = mode;
-}
-
 void HammerEngine::updateCameraDefault3D(){
     glfwPollEvents();
 

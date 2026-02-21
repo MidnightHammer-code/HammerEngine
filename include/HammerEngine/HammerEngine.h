@@ -60,39 +60,36 @@ public:
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);   // Forward direction
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);       // Up direction
 
-    const char *texturePath;
-
-    GLFWwindow* window;
-
-    int cameraModeInit;
-
-    int drawModSet;
-
-    std::string vertShaderPath;
-
+    std::string vertShaderPath; // path to shaders
     std::string fragShaderPath;
 
-    float renderDistance = 512.0f;
+    bool triangleRender2SideMode = false; // render both side of triangle
 
-    float cameraFallSpeed = 0.01;
+    const char *texturePath; // path to texture atlas
 
-    void setMaxVertciesIndicesSize(VkDeviceSize maxsize);
+    GLFWwindow* window; // GLFW window
 
-    void drawMod(int mod);
+    int cameraMode2dOr3d; // set camera to 2d or 3d mode
 
-    void cameraMode(int mode);
+    int renderTriangleMod = 0;
 
-    void runTest();
+    float renderDistance = 512.0f; // how fare the camera can see, bigger the numbre bigger the buffers more memory needed
 
-    void cleanup();
+    float cameraFallSpeed = 0.01; // how fast the camera falls in gravaty enabled.
+
+    void setMaxVertciesIndicesSize(VkDeviceSize maxsize); // giving the maximume size that the vertcies and incices can go to.
+
+    void runTest(); // running a test.
+
+    void cleanup(); // engine clean up.
 
     void drawPassStart();
 
     void drawPassEnd();
 
-    void initWindow();
+    void initWindow(); // GLFW window init
 
-    void initVulkan();
+    void initVulkan(); // vulkan init
 
     void updateCameraDefaultGravety3D(bool fall);
 
@@ -102,22 +99,11 @@ public:
 
     void updateFrameTimeEnd();
 
-    void drawFrame();
+    void drawFrame(); // function to call a new frame
 
     void updateFrameTimeStart();
 
-    void uploadVerticesIndices(const std::vector<uint32_t> indices, const std::vector<Vertex> vertices);
-
-    bool triangleMode = false;
-
-    void updateVertexIndexBuffers();
-
-    //QEngine();
-
-    // initWindow();
-    // initVulkan();
-    // mainLoopTest();
-    // cleanup();
+    void updateVertexIndexBuffers(); // update the vertex and indices (mesh)
 
 private:
 
