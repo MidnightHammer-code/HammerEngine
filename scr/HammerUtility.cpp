@@ -13,7 +13,7 @@ void HammerEngine::runTest() {
 
 void HammerEngine::initWindow() {
 
-    if(cameraModeInit == 1){
+    if(renderTriangleMod == 1){
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -24,7 +24,7 @@ void HammerEngine::initWindow() {
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwMakeContextCurrent(window);
-    } else if(cameraModeInit == 0){
+    } else if(renderTriangleMod == 0){
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -91,16 +91,6 @@ void HammerEngine::updateFrameTimeStart(){
     currentTime = glfwGetTime();
     frameCount++;
     glfwPollEvents();
-}
-
-
-
-void HammerEngine::uploadVerticesIndices(const std::vector<uint32_t> Indices, const std::vector<Vertex> Vertices){
-    std::cout << "Sorry uploadVerticesIndices fonction is not available yet, we are working on it\n";
-}
-
-void HammerEngine::drawMod(int mod){
-    drawModSet = mod;
 }
 
 void HammerEngine::setMaxVertciesIndicesSize(VkDeviceSize maxsize){
