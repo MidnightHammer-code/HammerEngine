@@ -84,7 +84,7 @@ int main() {
         HammerRectCubeF cube{0,0,0, 1,1,1};
         HammerRectCubeF camera{Engine.cameraPosition.x,Engine.cameraPosition.y-1,Engine.cameraPosition.z, 1,1,1};
 
-        Engine.updateCameraDefaultGravety3D(camera.HammerRectCollideRectCubeF(cube));
+        Engine.updateCameraDefaultGravety3D(camera.HammerRectCollideCubeF(cube));
         Engine.drawFrame();
 
         Engine.updateFrameTimeEnd();

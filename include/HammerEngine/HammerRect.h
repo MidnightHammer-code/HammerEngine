@@ -13,7 +13,8 @@ public:
 	int h;
 	int d;
 
-	bool HammerRectCollideRectCube(HammerRectCube rect);
+	bool HammerRectCollideCube(HammerRectCube rect);
+	int HammerRectCollideFaceCube(HammerRectCube rect);
 	HammerRectCube(int X, int Y, int Z, int W, int H, int D);
 };
 
@@ -27,7 +28,8 @@ public:
 	float w;
 	float h;
 	float d;
-	bool HammerRectCollideRectCubeF(HammerRectCubeF rect);
+	bool HammerRectCollideCubeF(HammerRectCubeF rect);
+	int HammerRectCollideFaceCubeF(HammerRectCubeF rect);
 	HammerRectCubeF(float X, float Y, float Z, float W, float H, float D);
 };
 
@@ -40,7 +42,8 @@ public:
 
 	int w;
 	int h;
-	bool HammerRectCollideRectSquare(HammerRectSquare rect);
+	bool HammerRectCollideSquare(HammerRectSquare rect);
+	int HammerRectCollideFaceSquare(HammerRectSquare rect);
 	HammerRectSquare(int X, int Y, int W, int H);
 };
 
@@ -51,7 +54,8 @@ public:
 
 	float w;
 	float h;
-	bool HammerRectCollideRectSquareF(HammerRectSquareF rect);
+	bool HammerRectCollideSquareF(HammerRectSquareF rect);
+	int HammerRectCollideFaceSquareF(HammerRectSquareF rect);
 	HammerRectSquareF(float X, float Y, float W, float H);
 };
 
