@@ -1,5 +1,6 @@
 #include "../include/HammerEngine/HammerEngine.h"
 #include <vulkan/vulkan_core.h>
+#include <iostream>
 #include <vector>
 #include <cstring>
 #include <cstdlib>
@@ -29,47 +30,9 @@ void HammerEngine::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t wi
     endSingleTimeCommands(commandBuffer);
 }
 
-void HammerEngine::updateVertexIndexBuffers(){
+void HammerEngine::updateVertexIndexBuffers(std::vector<Vertex>& vertices, std::vector<uint32_t>& indices){
     VkDeviceSize newVertexSize = sizeof(Vertex) * vertices.size();
     VkDeviceSize newIndexSize  = sizeof(uint32_t) * indices.size();
-
-    //bool resizeVertexBuffer = (newVertexSize > vertexBufferSize);
-    //bool resizeIndexBuffer  = (newIndexSize  > indexBufferSize);
-
-    // // --- Recreate vertex buffer if needed ---
-    // if (resizeVertexBuffer && resizeIndexBuffer) {
-        
-    //     vkDestroyBuffer(device, vertexBuffer, nullptr);
-    //     vkFreeMemory(device, vertexBufferMemory, nullptr);
-        
-
-    //     createBuffer(
-    //         newVertexSize,
-    //         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-    //         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-    //         vertexBuffer,
-    //         vertexBufferMemory
-    //     );
-
-    //     vertexBufferSize = newVertexSize;
-
-        
-
-    //     vkDestroyBuffer(device, indexBuffer, nullptr);
-    //     vkFreeMemory(device, indexBufferMemory, nullptr);
-        
-
-    //     createBuffer(
-    //         newIndexSize,
-    //         VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-    //         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-    //         indexBuffer,
-    //         indexBufferMemory
-    //     );
-
-    //     indexBufferSize = newIndexSize;
-    // }
-    
     
 
     // --- Upload vertex data ---
@@ -80,27 +43,23 @@ void HammerEngine::updateVertexIndexBuffers(){
         memcpy(data, vertices.data(), (size_t)newVertexSize);
         vkUnmapMemory(device, stagingBufferMemory);
 
-        //copyBuffer(stagingBuffer, vertexBuffer, newVertexSize);
-
         void* data2;
         vkMapMemory(device, stagingBuffer2Memory, 0, newIndexSize, 0, &data2);
         memcpy(data2, indices.data(), (size_t)newIndexSize);
         vkUnmapMemory(device, stagingBuffer2Memory);
 
-        //copyBuffer(stagingBuffer, indexBuffer, newIndexSize);
 
+        VkCommandBuffer commandBuffer = beginSingleTimeCommands();
 
-        // VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+        VkBufferCopy copyRegion{};
+        copyRegion.size = newVertexSize;
+        vkCmdCopyBuffer(commandBuffer, stagingBuffer, vertexBuffer, 1, &copyRegion);
 
-        // VkBufferCopy copyRegion{};
-        // copyRegion.size = newVertexSize;
-        // vkCmdCopyBuffer(commandBuffer, stagingBuffer, vertexBuffer, 1, &copyRegion);
+        VkBufferCopy copyRegion2{};
+        copyRegion2.size = newIndexSize;
+        vkCmdCopyBuffer(commandBuffer, stagingBuffer2, indexBuffer, 1, &copyRegion2);
 
-        // VkBufferCopy copyRegion2{};
-        // copyRegion.size = newIndexSize;
-        // vkCmdCopyBuffer(commandBuffer, stagingBuffer, indexBuffer, 1, &copyRegion2);
-
-        // endSingleTimeCommands(commandBuffer);
+        endSingleTimeCommands(commandBuffer);
     }
 
     

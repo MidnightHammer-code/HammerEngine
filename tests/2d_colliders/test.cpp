@@ -3,6 +3,7 @@
 #include <glm/ext/vector_float3.hpp>
 #include <vector>
 #include <glm/glm.hpp>
+#include <iostream>
 
 // === Entry Point ===
 int main() {
@@ -58,7 +59,6 @@ int main() {
         
         if (glfwGetKey(Engine.window, GLFW_KEY_I) == GLFW_PRESS){
             player.y+=0.1;
-            Engine.updateVertexIndexBuffers();
         }
         if (glfwGetKey(Engine.window, GLFW_KEY_K) == GLFW_PRESS){
             player.y-=0.1;
@@ -83,14 +83,7 @@ int main() {
             {{-0.5f, 0.5f, -1.5f},{1.0f,1.0f,0.0f},{0.0000f,0.0000f}},
         };
 
-        // auto start = std::chrono::high_resolution_clock::now();
-
-        Engine.updateVertexIndexBuffers();
-
-        // auto end = std::chrono::high_resolution_clock::now();
-        // std::chrono::duration<double> duration = end - start;
-
-        // std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << " milliseconds\n";
+        Engine.updateVertexIndexBuffers(vertices,indices);
 
         Engine.updateCameraDefault3D();
 

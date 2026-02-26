@@ -179,7 +179,6 @@ int main() {
 
         Engine.updateCameraDefault3D();
         Engine.drawFrame();
-        Engine.updateVertexIndexBuffers();
 
         Engine.updateFrameTimeEnd();
     }

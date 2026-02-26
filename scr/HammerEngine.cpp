@@ -1505,7 +1505,7 @@ bool HammerEngine::checkValidationLayerSupport() {
     return true;
 }
 
- std::vector<char> HammerEngine::readFile(std::string& filename) {
+ std::vector<char> HammerEngine::readFile(const std::string& filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
