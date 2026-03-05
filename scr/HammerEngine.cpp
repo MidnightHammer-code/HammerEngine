@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 MidnightHammer-code
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 #include <glm/ext/vector_float2.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <vulkan/vulkan_core.h>
