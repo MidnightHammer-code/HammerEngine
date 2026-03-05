@@ -17,4 +17,9 @@ Now we have a instance of the engine called "engine".
 Validation layers are there to give you more detaled errors than the one Vulkan gives you. For developpement we will turn them on.
 `Engine.enableValidationLayers = true;`
 You can always turn them off by just changine the true for a false.
+
 ### 2.2 Window
+In Hammer Engine you can change a few things of the window. These things include: window size (w and h) but also the title of the screen.
+
+Engine.WindowWidth = 1000;
+Engine.WindowHeight = 1000;
