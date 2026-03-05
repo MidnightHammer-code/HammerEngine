@@ -71,4 +71,4 @@ We are looking for contributors! Since we are in the alpha/beta stage, now is th
 
 # How to use?
 
-When the first non-alpha-beta version will release, there will be a guide to help you learn HammerEngine.
+The Hammer Engine tutorial is being made right now and should be out very sone.
