@@ -9,7 +9,7 @@ The goal of the Hammer Engine is combining ease of use and the speed of Vulkan t
 
 # The performance of Hammer
 
-The #1 goal of HammerEngine is it's performance on low-end machines. It out-performs many other engines while remaining compatable with machines as possible.
+The #1 goal of HammerEngine is it's performance on low-end machines. It out-performs many other engines while remaining compatable with as many machines as possible.
 
 # What does Hammer support?
 
