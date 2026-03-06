@@ -13,6 +13,8 @@
 ## # Did you update the demos?
 1. Do they still work?
 2. Do they work as expected?
+## # Does it fix any issues?
+1. If yes please link them
 
 ---
 *By submitting this PR, I ensure that the code follows the project's contribution guidelines.*
