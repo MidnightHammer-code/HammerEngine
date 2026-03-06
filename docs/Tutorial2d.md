@@ -16,7 +16,9 @@ Now we have a instance of the engine called "engine".
 ## 2. Configuring the Engine.
 ### 2.1 Validation layers
 Validation layers are there to give you more detaled errors than the one Vulkan gives you. For developpement we will turn them on.
+
 `Engine.enableValidationLayers = true;`
+
 You can always turn them off by just changine the true for a false.
 
 ### 2.2 Window
