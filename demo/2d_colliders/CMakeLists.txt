@@ -9,12 +9,12 @@ project(voxel_Engine VERSION 2.0)
 
 set(SOURCE_FILES
     test.cpp
-    ../../scr/HammerEngine.cpp
-    ../../scr/HammerUtility.cpp
-    ../../scr/HammerCamera.cpp
-    ../../scr/HammerRect.cpp
-    ../../scr/HammerBuffers.cpp
-    ../../scr/HammerPipeline.cpp
+    ../../src/HammerEngine.cpp
+    ../../src/HammerUtility.cpp
+    ../../src/HammerCamera.cpp
+    ../../src/HammerRect.cpp
+    ../../src/HammerBuffers.cpp
+    ../../src/HammerPipeline.cpp
 )
 
 find_package(Vulkan REQUIRED)

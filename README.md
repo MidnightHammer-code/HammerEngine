@@ -29,7 +29,8 @@ The official tutorial is at docs/
 
 1. To build Hammer Engine you will need to install vulkan, vulkan validation layers, spirv tools and stb.
 
-`sudo apt-get install libvulkan-dev vulkan-tools vulkan-validationlayers spirv-tools libstb-dev`
+`sudo apt-get install libvulkan-dev vulkan-tools vulkan-validationlayers spirv-tools libstb-dev libglm-dev libglfw3-dev
+`
 
 2. Test your vulkan install
 
@@ -41,7 +42,7 @@ The official tutorial is at docs/
 
 4. Go in the HammerEngine/tests/3d_world folder or any other test
 
-`cd HammerEngine/tests/3d_world/`
+`cd HammerEngine/demo/3d_world/`
 
 5. Make a folder called build and go in the build folder
 
@@ -49,7 +50,7 @@ The official tutorial is at docs/
 
 6. Run Cmake and make to prepare the build and build it using all available cores
 
-`cmake .. && make -j(nproc)`
+`cmake .. && make -j <core count>`
 
 7. Move the executable to the main demo folder and go to the main demo folder
 
