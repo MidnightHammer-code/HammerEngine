@@ -19,6 +19,10 @@ Collision System: Includes a functional, simple collision detection system.
 
 Developer Friendly: Designed for rapid prototyping without sacrificing performance.
 
+# Want to learn Hammer?
+
+The official tutorial is at docs/
+
 # Run demos
 
 ## Linux
