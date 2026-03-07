@@ -66,28 +66,28 @@ public:
 };
 
 
-// finish the Cercle to Square and cube
+// finish the Circle to Square and cube
 
-class HammerRectCercle{
+class HammerRectCircle{
 public:
 	int x;
 	int y;
 
 	int r;
 
-	bool HammerRectCollideCercleToCercle(HammerRectCercle rect);
-	HammerRectCercle(int X, int Y, int R);
+	bool HammerRectCollideCircleToCircle(HammerRectCircle rect);
+	HammerRectCircle(int X, int Y, int R);
 };
 
-class HammerRectCercleF{
+class HammerRectCircleF{
 public:
 	float x;
 	float y;
 
 	float r;
 
-	bool HammerRectCollideCercleToCercleF(HammerRectCercleF rect);
-	HammerRectCercleF(float X, float Y, float R);
+	bool HammerRectCollideCircleToCircleF(HammerRectCircleF rect);
+	HammerRectCircleF(float X, float Y, float R);
 };
 
 ///

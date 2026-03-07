@@ -275,13 +275,13 @@ bool HammerRectSquareF::HammerRectCollideSquareF(HammerRectSquareF rect) {
     );
 }
 
-HammerRectCercle::HammerRectCercle(int X, int Y, int R) {
+HammerRectCircle::HammerRectCircle(int X, int Y, int R) {
     this->x = X;
     this->y = Y;
     this->r = R;
 }
 
-bool HammerRectCercle::HammerRectCollideCercleToCercle(HammerRectCercle rect) {
+bool HammerRectCircle::HammerRectCollideCircleToCircle(HammerRectCircle rect) {
     int dx = this->x - rect.x;
     int dy = this->y - rect.y;
 
@@ -293,13 +293,13 @@ bool HammerRectCercle::HammerRectCollideCercleToCercle(HammerRectCercle rect) {
     return distanceSquared <= radiusSumSquared;
 }
 
-HammerRectCercleF::HammerRectCercleF(float X, float Y, float R) {
+HammerRectCircleF::HammerRectCircleF(float X, float Y, float R) {
     this->x = X;
     this->y = Y;
     this->r = R;
 }
 
-bool HammerRectCercleF::HammerRectCollideCercleToCercleF(HammerRectCercleF rect) {
+bool HammerRectCircleF::HammerRectCollideCircleToCircleF(HammerRectCircleF rect) {
     float dx = this->x - rect.x;
     float dy = this->y - rect.y;
 
