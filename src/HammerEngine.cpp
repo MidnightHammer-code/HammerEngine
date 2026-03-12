@@ -275,10 +275,19 @@ void HammerEngine::addMeshRenderer(HammerMesh mesh){
 
 HammerMesh::HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, 
                        const std::vector<Vertex>& vertices, 
-                       const std::vector<uint32_t>& indices) 
-    : engine(engine), pipeline(pipeline) {
+                       const std::vector<uint32_t>& indices,
+                       glm::vec3 initialPos) // Matching your header's parameter name
+    : engine(engine), pipeline(pipeline), position(initialPos) {
     
-    indexCount = static_cast<uint32_t>(indices.size());
+    if (vertices.empty() || indices.size() == 0) {
+        std::cerr << "HammerMesh Error: Cannot create mesh with 0 vertices/indices!" << std::endl;
+        return; 
+    }
+
+    this->vertexData = vertices;
+    this->indexData = indices;
+    this->indexCount = static_cast<uint32_t>(indices.size());
+
     createVertexBuffer(vertices);
     createIndexBuffer(indices);
 }
@@ -292,6 +301,8 @@ HammerMesh::~HammerMesh() {
 }
 
 void HammerMesh::createVertexBuffer(const std::vector<Vertex>& vertices) {
+    if (vertices.empty()) return; // <--- Safety Check
+
     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
     VkBuffer stagingBuffer;
@@ -329,6 +340,8 @@ void HammerMesh::createVertexBuffer(const std::vector<Vertex>& vertices) {
 }
 
 void HammerMesh::createIndexBuffer(const std::vector<uint32_t>& indices) {
+    if (indices.empty()) return;
+
     VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
     VkBuffer stagingBuffer;
@@ -362,6 +375,15 @@ void HammerMesh::createIndexBuffer(const std::vector<uint32_t>& indices) {
 }
 
 void HammerMesh::bindAndDraw(VkCommandBuffer commandBuffer) {
+    vkCmdPushConstants(
+        commandBuffer,
+        pipeline->pipelineLayout,
+        VK_SHADER_STAGE_VERTEX_BIT, 
+        0, 
+        sizeof(glm::vec3), 
+        &position
+    );
+
     VkBuffer vertexBuffers[] = {vertexBuffer};
     VkDeviceSize offsets[] = {0};
     

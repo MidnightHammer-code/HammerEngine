@@ -60,7 +60,6 @@ static const uint32_t faceIndicesPattern[] = { 0, 1, 2, 2, 3, 0 };
 
 void generateCubeGrid(std::vector<Vertex>& outVertices, std::vector<uint32_t>& outIndices, int width, int height, int depth) {
     uint32_t vertexOffset = 0;
-
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
             for (int z = 0; z < depth; ++z) {
@@ -93,9 +92,7 @@ int main() {
     Engine.renderDistance = 1000.0f;
     Engine.cameraSpeed = 1.0f;
 
-    // --- New Camera Placement for the Floor Grid ---
-    // We sit above the grid (Y=40) and look down/forward
-    Engine.cameraPosition = glm::vec3(50.0f, 40.0f, 150.0f);
+    Engine.cameraPosition = glm::vec3(5.0f, 5.0f, 15.0f); // Adjusted for a single cube view
     Engine.cameraFront = glm::normalize(glm::vec3(0.0f, -0.5f, -1.0f));
 
     Engine.initWindow();
@@ -108,16 +105,17 @@ int main() {
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     
-    // Grid is now 100 wide (X), 1 high (Y), 100 deep (Z)
-    generateCubeGrid(vertices, indices, 1, 1, 1);
+    generateCubeGrid(vertices, indices, 10, 10, 10);
 
-    Engine.meshs.push_back(std::make_unique<HammerMesh>(
-        Engine, mainPipeline.get(), vertices, indices
-    ));
+    auto myMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), vertices, indices, glm::vec3(0.0f, 0.0f, 0.0f));
+    
+    HammerMesh* meshPtr = myMesh.get();
+    Engine.meshs.push_back(std::move(myMesh));
 
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
         Engine.updateFrameTimeStart();
+
         Engine.updateCameraDefault3D();
         Engine.drawFrame(); 
         Engine.updateFrameTimeEnd();
