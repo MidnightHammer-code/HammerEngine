@@ -8,6 +8,7 @@
 #define HAMMERENGINE_H
 
 #include <chrono>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/glm.hpp>
 #include <memory>
 #include <optional>
@@ -31,6 +32,12 @@ struct Vertex {
     static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions();
 };
 
+struct MeshPushConstants {
+    glm::vec3 position;
+    // Note: GLM/Vulkan alignment rules usually require padding 
+    // if we add more variables here later.
+};
+
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
     std::optional<uint32_t> presentFamily;
@@ -52,9 +59,12 @@ class HammerMesh {
 public:
     HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, 
                const std::vector<Vertex>& vertices, 
-               const std::vector<uint32_t>& indices);
+               const std::vector<uint32_t>& indices,
+               glm::vec3 initialPos = glm::vec3(0.0f));
     
     ~HammerMesh();
+
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 
     std::vector<Vertex> vertexData;
 

@@ -6,6 +6,7 @@
 
 #include "../../include/HammerEngine/HammerEngine.h"
 #include "../../include/HammerEngine/HammerRect.h"
+#include <glm/ext/vector_float3.hpp>
 #include <vector>
 #include <string>
 #include <glm/glm.hpp>
@@ -46,7 +47,7 @@ int main() {
 
     auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vShader, fShader, 1, true);
     
-    auto sceneMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), getVertices(player), localIndices);
+    auto sceneMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), getVertices(player), localIndices, glm::vec3(0.0f, 0.0f, 0.0f));
 
     HammerMesh* meshPtr = sceneMesh.get();
     
@@ -64,7 +65,7 @@ int main() {
         if (glfwGetKey(Engine.window, GLFW_KEY_L) == GLFW_PRESS) { player.x += 0.1f; moved = true; }
 
         if (moved) {
-            meshPtr->updateBuffers(getVertices(player), localIndices);
+            meshPtr->position = glm::vec3(player.x, player.y, 0);
         }
 
         Engine.updateCameraDefault3D();

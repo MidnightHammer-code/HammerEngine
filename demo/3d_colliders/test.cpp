@@ -13,7 +13,6 @@
 int main() {
     HammerEngine Engine;
 
-    // 1. Initial Configuration
     Engine.enableValidationLayers = true;
     Engine.WindowWidth = 900;
     Engine.WindowHeight = 900;
@@ -24,11 +23,9 @@ int main() {
     Engine.renderDistance = 64.0f;
     Engine.cameraPosition = glm::vec3(0, 5, 0);
 
-    // 2. Initialize Core Vulkan
     Engine.initWindow();
     Engine.initVulkan();
 
-    // 3. Define the cube data locally
     std::vector<Vertex> localVertices = {
         // Front (tile 0,0)
         {{-0.5f,-0.5f, 0.5f},{1.0f,0.0f,0.0f},{0.0000f,0.0625f}},
@@ -76,29 +73,25 @@ int main() {
         20, 21, 22, 22, 23, 20  // Left
     };
 
-    // 4. Create Pipeline and Mesh
     std::string vPath = "shaders/vert.spv";
     std::string fPath = "shaders/frag.spv";
     
-    // We create the pipeline as a unique_ptr to manage its lifetime
     auto mainPipeline = std::make_unique<HammerPipeline>(
         Engine, vPath, fPath, 1, true
     );
 
-    // Add the cube to the engine's mesh list
     Engine.meshs.push_back(std::make_unique<HammerMesh>(
         Engine, 
         mainPipeline.get(), 
         localVertices, 
-        localIndices
+        localIndices,
+        glm::vec3(0.0f, 0.0f, 0.0f)
     ));
 
-    // 5. Drawing loop
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
         Engine.updateFrameTimeStart();
 
-        // Collision logic
         HammerRectCubeF cube{0, 0, 0, 1, 1, 1};
         HammerRectCubeF camera{
             Engine.cameraPosition.x,
@@ -109,10 +102,8 @@ int main() {
 
         bool isColliding = camera.HammerRectCollideCubeF(cube);
         
-        // Update gravity based on collision
         Engine.updateCameraDefaultGravety3D(isColliding);
         
-        // The Engine now automatically loops through Engine.meshs in drawFrame
         Engine.drawFrame();
 
         Engine.updateFrameTimeEnd();
