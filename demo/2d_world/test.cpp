@@ -46,8 +46,7 @@ int main() {
         Engine, 
         mainPipeline.get(), 
         localVertices, 
-        localIndices,
-        glm::vec3(0.0f, 0.0f, 0.0f)
+        localIndices
     ));
 
     Engine.drawPassStart();

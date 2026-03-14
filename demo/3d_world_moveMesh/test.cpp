@@ -5,6 +5,7 @@
  */
 
 #include "../../include/HammerEngine/HammerEngine.h"
+#include <iostream>
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
@@ -113,6 +114,16 @@ int main() {
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
         Engine.updateFrameTimeStart();
+
+        float time = static_cast<float>(glfwGetTime());
+
+        meshPtr->position.y = sin(time) * 2.0f; 
+
+        meshPtr->rotation.y = time * 45.0f;
+        meshPtr->rotation.x = time * 20.0f;
+
+        float scaleValue = 1.0f + sin(time) * 0.5f;
+        meshPtr->scale = glm::vec3(scaleValue);
 
         Engine.updateCameraDefault3D();
         Engine.drawFrame(); 

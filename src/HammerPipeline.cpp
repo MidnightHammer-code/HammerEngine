@@ -5,6 +5,7 @@
  */
 
 #include "../include/HammerEngine/HammerEngine.h" 
+#include <glm/ext/matrix_float4x4.hpp>
 #include <stdexcept>
 
 HammerPipeline::HammerPipeline(
@@ -111,16 +112,15 @@ void HammerPipeline::createGraphicsPipeline(
     dynamicState.pDynamicStates = dynamicStates.data();
 
     VkPushConstantRange pushConstantRange{};
-    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // Accessible in Vertex Shader
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
     pushConstantRange.offset = 0;
-    pushConstantRange.size = sizeof(glm::vec3); // Size of our position vector
+    pushConstantRange.size = sizeof(glm::mat4);
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 1;
     pipelineLayoutInfo.pSetLayouts = &hammerEngine.descriptorSetLayout;
 
-    // 2. Assign the push constant range to the layout
     pipelineLayoutInfo.pushConstantRangeCount = 1;
     pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 

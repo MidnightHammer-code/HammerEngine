@@ -33,9 +33,7 @@ struct Vertex {
 };
 
 struct MeshPushConstants {
-    glm::vec3 position;
-    // Note: GLM/Vulkan alignment rules usually require padding 
-    // if we add more variables here later.
+    glm::mat4 modelMatrix;
 };
 
 struct QueueFamilyIndices {
@@ -59,12 +57,13 @@ class HammerMesh {
 public:
     HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, 
                const std::vector<Vertex>& vertices, 
-               const std::vector<uint32_t>& indices,
-               glm::vec3 initialPos = glm::vec3(0.0f));
+               const std::vector<uint32_t>& indices);
     
     ~HammerMesh();
 
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 rotation = glm::vec3(0.0f);
+    glm::vec3 scale    = glm::vec3(1.0f);
 
     std::vector<Vertex> vertexData;
 

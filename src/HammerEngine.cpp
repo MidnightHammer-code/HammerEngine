@@ -275,9 +275,8 @@ void HammerEngine::addMeshRenderer(HammerMesh mesh){
 
 HammerMesh::HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, 
                        const std::vector<Vertex>& vertices, 
-                       const std::vector<uint32_t>& indices,
-                       glm::vec3 initialPos) // Matching your header's parameter name
-    : engine(engine), pipeline(pipeline), position(initialPos) {
+                       const std::vector<uint32_t>& indices)
+    : engine(engine), pipeline(pipeline) {
     
     if (vertices.empty() || indices.size() == 0) {
         std::cerr << "HammerMesh Error: Cannot create mesh with 0 vertices/indices!" << std::endl;
@@ -375,13 +374,24 @@ void HammerMesh::createIndexBuffer(const std::vector<uint32_t>& indices) {
 }
 
 void HammerMesh::bindAndDraw(VkCommandBuffer commandBuffer) {
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+    model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+    model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+    model = glm::scale(model, scale);
+
+    MeshPushConstants push{};
+    push.modelMatrix = model;
+
     vkCmdPushConstants(
         commandBuffer,
         pipeline->pipelineLayout,
-        VK_SHADER_STAGE_VERTEX_BIT, 
-        0, 
-        sizeof(glm::vec3), 
-        &position
+        VK_SHADER_STAGE_VERTEX_BIT,
+        0,
+        sizeof(MeshPushConstants),
+        &push
     );
 
     VkBuffer vertexBuffers[] = {vertexBuffer};

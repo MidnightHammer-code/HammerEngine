@@ -47,7 +47,7 @@ int main() {
 
     auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vShader, fShader, 1, true);
     
-    auto sceneMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), getVertices(player), localIndices, glm::vec3(0.0f, 0.0f, 0.0f));
+    auto sceneMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), getVertices(player), localIndices);
 
     HammerMesh* meshPtr = sceneMesh.get();
     
