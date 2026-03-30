@@ -100,21 +100,18 @@ auto mainPipeline = std::make_unique<HammerPipeline>(
 4.1 Loading a Texture
 
 We use std::make_unique to manage the memory of our texture. We also specify a filter (like Nearest for crisp pixel art).
-C++
 
 `auto mainTexture = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);`
 
 4.2 Creating a Pipeline
 
 The pipeline needs your vertex and fragment shaders.
-C++
 
 auto mainPipeline = std::make_unique<HammerPipeline>(Engine, "shaders/vert.spv", “shaders/frag.spv", 1, true);
 
 5. Creating a Mesh
 
 A Mesh is the actual object in your world. It requires three things: Vertices (points in space), Indices (the order to connect those points), and the Texture/Pipeline we created above.
-C++
 
 // Define a simple square
 std::vector<Vertex> vertices = {
@@ -131,7 +128,6 @@ Engine.meshs.push_back(std::make_unique<HammerMesh>(Engine, mainPipeline.get(), 
 6. The Main Loop
 
 Finally, we create the "heartbeat" of your application. This loop runs every frame until you close the window.
-C++
 
 Engine.drawPassStart(); // Prepare the GPU for drawing
 
@@ -154,10 +150,10 @@ Engine.drawPassEnd(); // Clean up GPU tasks
 7. Memory Cleanup
 
 Because we are working with C++ and Vulkan, we need to be responsible. Before the program ends, ensure you reset your unique pointers to destroy the Vulkan resources in the correct order.
-C++
-
+```
 mainTexture.reset(); 
 mainPipeline.reset();
+```
 
 Congratulations!
 
