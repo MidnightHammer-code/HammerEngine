@@ -6,7 +6,7 @@
 
 #include "../../include/HammerEngine/HammerEngine.h"
 #include <vector>
-#include <memory>
+#include <string>
 #include <glm/glm.hpp>
 
 int main() {
@@ -21,17 +21,18 @@ int main() {
     Engine.cameraSpeed = 0.1f;
     Engine.renderDistance = 16.0f;
 
-
     Engine.initWindow();
     Engine.initVulkan();
 
     std::string vPath = "shaders/vert.spv";
     std::string fPath = "shaders/frag.spv";
-    auto mainPipeline = std::make_unique<HammerPipeline>(
+    
+    // Converted to raw pointers
+    HammerPipeline* mainPipeline = new HammerPipeline(
         Engine, vPath, fPath, 1, true
     );
 
-    auto mainTexture = std::make_unique<HammerTexture>(
+    HammerTexture* mainTexture = new HammerTexture(
         Engine, "textures/texture.png", HammerTextureFilter::Nearest
     );
 
@@ -46,15 +47,18 @@ int main() {
         0, 1, 2, 2, 3, 0
     };
 
-    Engine.meshs.push_back(std::make_unique<HammerMesh>(
+    // Allocate the mesh with new and push the pointer
+    HammerMesh* sceneMesh = new HammerMesh(
         Engine, 
-        mainPipeline.get(), 
-        mainTexture.get(), 
+        mainPipeline, 
+        mainTexture, 
         localVertices, 
         localIndices
-    ));
+    );
+    Engine.meshs.push_back(sceneMesh);
 
-    // --- Main Loop ---    Engine.drawPassStart();
+    // --- Main Loop ---
+    Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
         Engine.updateFrameTimeStart();
 
@@ -65,9 +69,11 @@ int main() {
         Engine.updateFrameTimeEnd();
     }
     Engine.drawPassEnd();
-    mainTexture.reset(); 
-    mainPipeline.reset();
-
+    
+    // Clean up allocated memory instead of .reset()
+    delete mainTexture;
+    delete mainPipeline;
+    
     Engine.cleanup();
 
     return EXIT_SUCCESS;

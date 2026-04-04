@@ -190,7 +190,7 @@ public:
 
     bool enableValidationLayers;
 
-    void addMeshRenderer(HammerMesh mesh);
+    void addMeshRenderer(HammerMesh* mesh);
 
     float yaw = -90.0f; // Horizontal angle
     float pitch = 0.0f; // Vertical angle
@@ -202,7 +202,7 @@ public:
     glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);   // Forward direction
     glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);       // Up direction
 
-    std::vector<std::unique_ptr<HammerMesh>> meshs;
+    std::vector<HammerMesh*> meshs;
 
     int MaxTextures = 1000;
 
