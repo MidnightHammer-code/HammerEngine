@@ -177,10 +177,12 @@ void HammerEngine::cleanupSwapChain() {
 }
 
 void HammerEngine::cleanup() {
+
+    vkDeviceWaitIdle(device);
+    meshs.clear();
+
     cleanupSwapChain();
 
-    vkDestroyPipeline(device, graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
     vkDestroyRenderPass(device, renderPass, nullptr);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
@@ -188,39 +190,29 @@ void HammerEngine::cleanup() {
         vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
     }
 
+    if (stagingBuffer != VK_NULL_HANDLE) {
+        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        stagingBuffer = VK_NULL_HANDLE;
+    }
+    if (stagingBufferMemory != VK_NULL_HANDLE) {
+        vkFreeMemory(device, stagingBufferMemory, nullptr);
+        stagingBufferMemory = VK_NULL_HANDLE;
+    }
 
 
-
-
-
-    vkDestroyBuffer(device, stagingBuffer, nullptr);
-    vkFreeMemory(device, stagingBufferMemory, nullptr);
-
-    vkDestroyBuffer(device, stagingBuffer2, nullptr);
-    vkFreeMemory(device, stagingBuffer2Memory, nullptr);
-
-
-
-
-
-
+    if (stagingBuffer2 != VK_NULL_HANDLE) {
+        vkDestroyBuffer(device, stagingBuffer2, nullptr);
+        stagingBuffer = VK_NULL_HANDLE;
+    }
+    if (&vkBindBufferMemory2 != VK_NULL_HANDLE) {
+        vkFreeMemory(device, stagingBuffer2Memory, nullptr);
+        stagingBuffer2Memory = VK_NULL_HANDLE;
+    }
 
     vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 
-    vkDestroySampler(device, textureSampler, nullptr);
-    vkDestroyImageView(device, textureImageView, nullptr);
-
-    vkDestroyImage(device, textureImage, nullptr);
-    vkFreeMemory(device, textureImageMemory, nullptr);
-
     vkDestroyDescriptorSetLayout(device, globalSetLayout, nullptr);
     vkDestroyDescriptorSetLayout(device, textureSetLayout, nullptr);
-
-    vkDestroyBuffer(device, indexBuffer, nullptr);
-    vkFreeMemory(device, indexBufferMemory, nullptr);
-
-    vkDestroyBuffer(device, vertexBuffer, nullptr);
-    vkFreeMemory(device, vertexBufferMemory, nullptr);
 
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
         vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
@@ -333,8 +325,6 @@ HammerMesh::HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, HammerTex
         std::cerr << "HammerMesh Error: Cannot create mesh with 0 vertices/indices!" << std::endl;
         return; 
     }
-    createVertexBuffer(vertices);
-    createIndexBuffer(indices);
 
     this->vertexData = vertices;
     this->indexData = indices;
@@ -345,11 +335,18 @@ HammerMesh::HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, HammerTex
 }
 
 HammerMesh::~HammerMesh() {
-    // Accessing 'device' directly from HammerEngine as per your header
-    vkDestroyBuffer(engine.device, vertexBuffer, nullptr);
-    vkFreeMemory(engine.device, vertexBufferMemory, nullptr);
-    vkDestroyBuffer(engine.device, indexBuffer, nullptr);
-    vkFreeMemory(engine.device, indexBufferMemory, nullptr);
+    if (vertexBuffer != VK_NULL_HANDLE) {
+        vkDestroyBuffer(engine.device, vertexBuffer, nullptr);
+    }
+    if (vertexBufferMemory != VK_NULL_HANDLE) {
+        vkFreeMemory(engine.device, vertexBufferMemory, nullptr);
+    }
+    if (indexBuffer != VK_NULL_HANDLE) {
+        vkDestroyBuffer(engine.device, indexBuffer, nullptr);
+    }
+    if (indexBufferMemory != VK_NULL_HANDLE) {
+        vkFreeMemory(engine.device, indexBufferMemory, nullptr);
+    }
 }
 
 void HammerMesh::createVertexBuffer(const std::vector<Vertex>& vertices) {

@@ -122,7 +122,10 @@ int main() {
     }
     Engine.drawPassEnd();
 
+    mainPipeline.reset();
     dirtTexture.reset();
+
+    Engine.cleanup();
 
     return EXIT_SUCCESS;
 }

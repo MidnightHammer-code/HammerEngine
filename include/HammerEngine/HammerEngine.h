@@ -272,30 +272,12 @@ public:
 	VkDescriptorSetLayout globalSetLayout; 
     VkDescriptorSetLayout textureSetLayout;
     std::vector<VkDescriptorSet> globalDescriptorSets;
-	VkPipelineLayout pipelineLayout;
-	VkPipeline graphicsPipeline;
 
 	VkCommandPool commandPool;
 
 	VkImage depthImage;
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
-
-	VkImage textureImage;
-	VkDeviceMemory textureImageMemory;
-	VkImageView textureImageView;
-	VkSampler textureSampler;
-
-	VkBuffer vertexBuffer;
-	VkDeviceMemory vertexBufferMemory;
-	VkBuffer indexBuffer;
-	VkDeviceMemory indexBufferMemory;
-
-
-
-
-
-
 
     VkDeviceSize vertexBufferSize;
     VkDeviceSize indexBufferSize;
@@ -309,12 +291,6 @@ public:
     VkDeviceSize stagingBuffer2Size = 0;
 
     std::vector<VkFence> imagesInFlight;
-
-
-
-
-
-
 
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;

@@ -5,7 +5,6 @@
  */
 
 #include "../../include/HammerEngine/HammerEngine.h"
-#include <iostream>
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
@@ -131,6 +130,8 @@ int main() {
 
     boxTexture.reset();
     mainPipeline.reset();
+
+    Engine.cleanup();
 
     return EXIT_SUCCESS;
 }

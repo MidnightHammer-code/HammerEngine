@@ -19,8 +19,15 @@ HammerPipeline::HammerPipeline(
 }
 
 HammerPipeline::~HammerPipeline() {
-    vkDestroyPipeline(hammerEngine.device, graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(hammerEngine.device, pipelineLayout, nullptr);
+
+    if(graphicsPipeline != VK_NULL_HANDLE){
+        vkDestroyPipeline(hammerEngine.device, graphicsPipeline, nullptr);
+        graphicsPipeline = VK_NULL_HANDLE;
+    }
+    if(pipelineLayout != VK_NULL_HANDLE){
+        vkDestroyPipelineLayout(hammerEngine.device, pipelineLayout, nullptr);
+        pipelineLayout = VK_NULL_HANDLE;
+    }
 }
 
 void HammerPipeline::createGraphicsPipeline(
