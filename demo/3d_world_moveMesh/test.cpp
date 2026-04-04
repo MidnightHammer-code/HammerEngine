@@ -6,52 +6,23 @@
 
 #include "../../include/HammerEngine/HammerEngine.h"
 #include <vector>
-#include <memory>
+#include <string>
+#include <cmath>
 #include <glm/glm.hpp>
 
 static const Vertex faceVertices[6][4] = {
     // Top face (+Y)
-    {
-        {{-0.5f, 0.5f,-0.5f},{1.0f,0.0f,0.0f},{0.1250f,0.0625f}},
-        {{ 0.5f, 0.5f,-0.5f},{0.0f,1.0f,0.0f},{0.1875f,0.0625f}},
-        {{ 0.5f, 0.5f, 0.5f},{0.0f,0.0f,1.0f},{0.1875f,0.0000f}},
-        {{-0.5f, 0.5f, 0.5f},{1.0f,1.0f,0.0f},{0.1250f,0.0000f}}
-    },
+    {{{-0.5f, 0.5f,-0.5f},{1.0f,0.0f,0.0f},{0.1250f,0.0625f}}, {{ 0.5f, 0.5f,-0.5f},{0.0f,1.0f,0.0f},{0.1875f,0.0625f}}, {{ 0.5f, 0.5f, 0.5f},{0.0f,0.0f,1.0f},{0.1875f,0.0000f}}, {{-0.5f, 0.5f, 0.5f},{1.0f,1.0f,0.0f},{0.1250f,0.0000f}}},
     // Bottom face (-Y)
-    {
-        {{-0.5f,-0.5f,-0.5f},{1.0f,0.0f,1.0f},{0.0625f,0.0625f}},
-        {{ 0.5f,-0.5f,-0.5f},{0.0f,1.0f,1.0f},{0.1250f,0.0625f}},
-        {{ 0.5f,-0.5f, 0.5f},{0.5f,0.5f,0.5f},{0.1250f,0.0000f}},
-        {{-0.5f,-0.5f, 0.5f},{0.0f,0.0f,0.0f},{0.0625f,0.0000f}}
-    },
+    {{{-0.5f,-0.5f,-0.5f},{1.0f,0.0f,1.0f},{0.0625f,0.0625f}}, {{ 0.5f,-0.5f,-0.5f},{0.0f,1.0f,1.0f},{0.1250f,0.0625f}}, {{ 0.5f,-0.5f, 0.5f},{0.5f,0.5f,0.5f},{0.1250f,0.0000f}}, {{-0.5f,-0.5f, 0.5f},{0.0f,0.0f,0.0f},{0.0625f,0.0000f}}},
     // Right face (+X)
-    {
-        {{ 0.5f,-0.5f,-0.5f},{1.0f,0.5f,0.0f},{0.0625f,0.0625f}},
-        {{ 0.5f, 0.5f,-0.5f},{0.5f,1.0f,0.0f},{0.0625f,0.0000f}},
-        {{ 0.5f, 0.5f, 0.5f},{0.0f,1.0f,0.5f},{0.0000f,0.0000f}},
-        {{ 0.5f,-0.5f, 0.5f},{0.5f,0.0f,1.0f},{0.0000f,0.0625f}}
-    },
+    {{{ 0.5f,-0.5f,-0.5f},{1.0f,0.5f,0.0f},{0.0625f,0.0625f}}, {{ 0.5f, 0.5f,-0.5f},{0.5f,1.0f,0.0f},{0.0625f,0.0000f}}, {{ 0.5f, 0.5f, 0.5f},{0.0f,1.0f,0.5f},{0.0000f,0.0000f}}, {{ 0.5f,-0.5f, 0.5f},{0.5f,0.0f,1.0f},{0.0000f,0.0625f}}},
     // Left face (-X)
-    {
-        {{-0.5f,-0.5f,-0.5f},{0.5f,0.0f,0.5f},{0.0625f,0.0625f}},
-        {{-0.5f, 0.5f,-0.5f},{0.5f,0.5f,0.0f},{0.0625f,0.0000f}},
-        {{-0.5f, 0.5f, 0.5f},{0.0f,0.5f,0.5f},{0.0000f,0.0000f}},
-        {{-0.5f,-0.5f, 0.5f},{0.0f,0.0f,0.5f},{0.0000f,0.0625f}}
-    },
+    {{{-0.5f,-0.5f,-0.5f},{0.5f,0.0f,0.5f},{0.0625f,0.0625f}}, {{-0.5f, 0.5f,-0.5f},{0.5f,0.5f,0.0f},{0.0625f,0.0000f}}, {{-0.5f, 0.5f, 0.5f},{0.0f,0.5f,0.5f},{0.0000f,0.0000f}}, {{-0.5f,-0.5f, 0.5f},{0.0f,0.0f,0.5f},{0.0000f,0.0625f}}},
     // Front face (+Z)
-    {
-        {{-0.5f,-0.5f, 0.5f},{1.0f,0.0f,0.0f},{0.0000f,0.0625f}},
-        {{ 0.5f,-0.5f, 0.5f},{0.0f,1.0f,0.0f},{0.0625f,0.0625f}},
-        {{ 0.5f, 0.5f, 0.5f},{0.0f,0.0f,1.0f},{0.0625f,0.0000f}},
-        {{-0.5f, 0.5f, 0.5f},{1.0f,1.0f,0.0f},{0.0000f,0.0000f}}
-    },
+    {{{-0.5f,-0.5f, 0.5f},{1.0f,0.0f,0.0f},{0.0000f,0.0625f}}, {{ 0.5f,-0.5f, 0.5f},{0.0f,1.0f,0.0f},{0.0625f,0.0625f}}, {{ 0.5f, 0.5f, 0.5f},{0.0f,0.0f,1.0f},{0.0625f,0.0000f}}, {{-0.5f, 0.5f, 0.5f},{1.0f,1.0f,0.0f},{0.0000f,0.0000f}}},
     // Back face (-Z)
-    {
-        {{-0.5f,-0.5f,-0.5f},{1.0f,0.0f,1.0f},{0.0000f,0.0625f}},
-        {{ 0.5f,-0.5f,-0.5f},{0.0f,1.0f,1.0f},{0.0625f,0.0625f}},
-        {{ 0.5f, 0.5f,-0.5f},{0.5f,0.5f,0.5f},{0.0625f,0.0000f}},
-        {{-0.5f, 0.5f,-0.5f},{0.0f,0.0f,0.0f},{0.0000f,0.0000f}}
-    }
+    {{{-0.5f,-0.5f,-0.5f},{1.0f,0.0f,1.0f},{0.0000f,0.0625f}}, {{ 0.5f,-0.5f,-0.5f},{0.0f,1.0f,1.0f},{0.0625f,0.0625f}}, {{ 0.5f, 0.5f,-0.5f},{0.5f,0.5f,0.5f},{0.0625f,0.0000f}}, {{-0.5f, 0.5f,-0.5f},{0.0f,0.0f,0.0f},{0.0000f,0.0000f}}}
 };
 
 static const uint32_t faceIndicesPattern[] = { 0, 1, 2, 2, 3, 0 };
@@ -98,18 +69,18 @@ int main() {
 
     std::string vPath = "shaders/vert.spv";
     std::string fPath = "shaders/frag.spv";
-    auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vPath, fPath, 1, true);
-
-    auto boxTexture = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
+    
+    // Allocate raw pointers
+    HammerPipeline* mainPipeline = new HammerPipeline(Engine, vPath, fPath, 1, true);
+    HammerTexture* boxTexture = new HammerTexture(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
 
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     generateCubeGrid(vertices, indices, 10, 10, 10);
 
-    auto myMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), boxTexture.get(), vertices, indices);
-    
-    HammerMesh* meshPtr = myMesh.get();
-    Engine.meshs.push_back(std::move(myMesh));
+    // Create and store mesh
+    HammerMesh* myMesh = new HammerMesh(Engine, mainPipeline, boxTexture, vertices, indices);
+    Engine.meshs.push_back(myMesh);
 
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
@@ -117,8 +88,9 @@ int main() {
 
         float time = static_cast<float>(glfwGetTime());
 
-        meshPtr->position.y = sin(time) * 0.5f; 
-        meshPtr->rotation.y = time * 20.0f;
+        // Animate the mesh using the raw pointer
+        myMesh->position.y = sin(time) * 0.5f; 
+        myMesh->rotation.y = time * 20.0f;
 
         Engine.updateCameraDefault3D();
         
@@ -128,9 +100,11 @@ int main() {
     }
     Engine.drawPassEnd();
 
-    boxTexture.reset();
-    mainPipeline.reset();
+    // Manual cleanup for pipeline and texture
+    delete boxTexture;
+    delete mainPipeline;
 
+    // Engine.cleanup() will handle deleting all pointers in Engine.meshs
     Engine.cleanup();
 
     return EXIT_SUCCESS;

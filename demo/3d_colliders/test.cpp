@@ -7,7 +7,7 @@
 #include "../../include/HammerEngine/HammerEngine.h"
 #include "../../include/HammerEngine/HammerRect.h"
 #include <vector>
-#include <memory>
+#include <string>
 #include <glm/glm.hpp>
 
 int main() {
@@ -16,7 +16,7 @@ int main() {
     Engine.enableValidationLayers = true;
     Engine.WindowWidth = 900;
     Engine.WindowHeight = 900;
-    Engine.MaxTextures = 1000; // Important for your Descriptor Pool size
+    Engine.MaxTextures = 1000; 
     Engine.windowName = "Hammer Engine - Collision Demo";
     Engine.mouseLock = 1;
     Engine.cameraSpeed = 0.1f;
@@ -26,11 +26,9 @@ int main() {
     Engine.initWindow();
     Engine.initVulkan();
 
-    // 1. Load the Texture explicitly
-    // This creates the VkImage, ImageView, Sampler, and DescriptorSet internally.
-    auto mainTexture = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
+    // 1. Load the Texture explicitly using raw pointer
+    HammerTexture* mainTexture = new HammerTexture(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
 
-    // ... (localVertices and localIndices remain the same) ...
     std::vector<Vertex> localVertices = {
         // Front (tile 0,0)
         {{-0.5f,-0.5f, 0.5f},{1.0f,0.0f,0.0f},{0.0000f,0.0625f}},
@@ -78,20 +76,20 @@ int main() {
         20, 21, 22, 22, 23, 20  // Left
     };
 
-    // 2. Setup Pipeline
+    // 2. Setup Pipeline using raw pointer
     std::string vPath = "shaders/vert.spv";
     std::string fPath = "shaders/frag.spv";
-    auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vPath, fPath, 1, true);
+    HammerPipeline* mainPipeline = new HammerPipeline(Engine, vPath, fPath, 1, true);
 
-    // 3. Create Mesh using the Texture
-    // Pass mainTexture.get() as the third argument
-    Engine.meshs.push_back(std::make_unique<HammerMesh>(
+    // 3. Create Mesh and store in Engine
+    HammerMesh* sceneMesh = new HammerMesh(
         Engine, 
-        mainPipeline.get(), 
-        mainTexture.get(), 
+        mainPipeline, 
+        mainTexture, 
         localVertices, 
         localIndices
-    ));
+    );
+    Engine.meshs.push_back(sceneMesh);
 
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
@@ -116,10 +114,10 @@ int main() {
     }
     Engine.drawPassEnd();
 
-    // 4. Manual Cleanup (using .reset() to destroy Vulkan resources safely)
-    mainTexture.reset(); 
-    mainPipeline.reset();
-
+    // 4. Cleanup
+    delete mainTexture;
+    delete mainPipeline;
+    
     Engine.cleanup();
 
     return EXIT_SUCCESS;

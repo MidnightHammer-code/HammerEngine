@@ -179,6 +179,10 @@ void HammerEngine::cleanupSwapChain() {
 void HammerEngine::cleanup() {
 
     vkDeviceWaitIdle(device);
+
+    for (HammerMesh* mesh : meshs) {
+        delete mesh;
+    }
     meshs.clear();
 
     cleanupSwapChain();
@@ -311,8 +315,8 @@ HammerModel::HammerModel(const std::string& path){
     }
 
 
-void HammerEngine::addMeshRenderer(HammerMesh mesh){
-    meshs.push_back(std::make_unique<HammerMesh>(mesh.engine, mesh.pipeline, mesh.texture, mesh.vertexData, mesh.indexData));
+void HammerEngine::addMeshRenderer(HammerMesh* mesh) {
+    meshs.push_back(mesh);
 }
 
 HammerMesh::HammerMesh(HammerEngine& engine, HammerPipeline* pipeline, HammerTexture* texture, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices) 

@@ -5,7 +5,8 @@
  */
 
 #include "../../include/HammerEngine/HammerEngine.h"
-#include <memory>
+#include <vector>
+#include <string>
 #include <glm/glm.hpp>
 
 
@@ -29,15 +30,19 @@ int main() {
 
     std::string vPath = "shaders/vert.spv";
     std::string fPath = "shaders/frag.spv";
-    auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vPath, fPath, 1, true);
+    
+    // Allocate pipeline with new
+    HammerPipeline* mainPipeline = new HammerPipeline(Engine, vPath, fPath, 1, true);
 
     HammerModel model("model/teapot.obj");
 
-    auto dirtTexture  = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
+    // Allocate texture with new
+    HammerTexture* dirtTexture = new HammerTexture(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
 
-    auto myMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), dirtTexture.get(), model.vertexData, model.indexData);
+    // Allocate mesh with new and push the raw pointer to the engine
+    HammerMesh* myMesh = new HammerMesh(Engine, mainPipeline, dirtTexture, model.vertexData, model.indexData);
     
-    Engine.meshs.push_back(std::move(myMesh));
+    Engine.meshs.push_back(myMesh);
 
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
@@ -51,8 +56,10 @@ int main() {
     }
     Engine.drawPassEnd();
 
-    mainPipeline.reset();
-    dirtTexture.reset();
+    // Clean up allocated resources
+    delete mainPipeline;
+    delete dirtTexture;
+    // myMesh is cleaned up inside Engine.cleanup() via the loop we added earlier
 
     Engine.cleanup();
 

@@ -6,7 +6,7 @@
 
 #include "../../include/HammerEngine/HammerEngine.h"
 #include <vector>
-#include <memory>
+#include <string>
 #include <glm/glm.hpp>
 
 static const Vertex faceVertices[6][4] = {
@@ -98,17 +98,20 @@ int main() {
 
     std::string vPath = "shaders/vert.spv";
     std::string fPath = "shaders/frag.spv";
-    auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vPath, fPath, 1, true);
+    
+    // Allocate raw pointer for pipeline
+    HammerPipeline* mainPipeline = new HammerPipeline(Engine, vPath, fPath, 1, true);
 
-    auto dirtTexture  = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
+    // Allocate raw pointer for texture
+    HammerTexture* dirtTexture = new HammerTexture(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
 
     std::vector<Vertex> vertices;
     std::vector<uint32_t> indices;
     generateCubeGrid(vertices, indices, 10, 10, 10);
 
-    auto myMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), dirtTexture.get(), vertices, indices);
-    
-    Engine.meshs.push_back(std::move(myMesh));
+    // Allocate raw pointer for mesh and add to engine vector
+    HammerMesh* myMesh = new HammerMesh(Engine, mainPipeline, dirtTexture, vertices, indices);
+    Engine.meshs.push_back(myMesh);
 
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
@@ -122,9 +125,11 @@ int main() {
     }
     Engine.drawPassEnd();
 
-    mainPipeline.reset();
-    dirtTexture.reset();
-
+    // Clean up allocated memory
+    delete mainPipeline;
+    delete dirtTexture;
+    
+    // Engine.cleanup() will delete the pointers inside Engine.meshs
     Engine.cleanup();
 
     return EXIT_SUCCESS;

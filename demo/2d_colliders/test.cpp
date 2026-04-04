@@ -28,7 +28,8 @@ int main() {
     Engine.initWindow();
     Engine.initVulkan();
 
-    auto mainTexture = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
+    // Use raw pointers with the 'new' keyword
+    HammerTexture* mainTexture = new HammerTexture(Engine, "textures/texture.png", HammerTextureFilter::Nearest);
 
     HammerRectSquareF player{0, 2, 1, 1};
 
@@ -46,12 +47,12 @@ int main() {
     std::string vShader = "shaders/vert.spv";
     std::string fShader = "shaders/frag.spv";
 
-    auto mainPipeline = std::make_unique<HammerPipeline>(Engine, vShader, fShader, 1, true);
+    HammerPipeline* mainPipeline = new HammerPipeline(Engine, vShader, fShader, 1, true);
     
-    auto sceneMesh = std::make_unique<HammerMesh>(Engine, mainPipeline.get(), mainTexture.get(), getVertices(player), localIndices);
+    HammerMesh* sceneMesh = new HammerMesh(Engine, mainPipeline, mainTexture, getVertices(player), localIndices);
 
-    HammerMesh* meshPtr = sceneMesh.get();
-    Engine.meshs.push_back(std::move(sceneMesh));
+    // Push the raw pointer directly
+    Engine.meshs.push_back(sceneMesh);
 
     Engine.drawPassStart();
     while (!glfwWindowShouldClose(Engine.window)) {
@@ -64,7 +65,7 @@ int main() {
         if (glfwGetKey(Engine.window, GLFW_KEY_L) == GLFW_PRESS) { player.x += 0.1f; moved = true; }
 
         if (moved) {
-            meshPtr->position = glm::vec3(player.x, player.y, 0);
+            sceneMesh->position = glm::vec3(player.x, player.y, 0);
         }
 
         Engine.updateCameraDefault3D();
@@ -73,9 +74,10 @@ int main() {
     }
     Engine.drawPassEnd();
 
-    mainTexture.reset();
-    mainPipeline.reset();
-
+    // Clean up allocated memory instead of .reset()
+    delete mainTexture;
+    delete mainPipeline;
+    
     Engine.cleanup();
 
     return EXIT_SUCCESS;
