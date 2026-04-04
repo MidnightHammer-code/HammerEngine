@@ -3,21 +3,23 @@
 # LICENSE file in the root directory of this source tree.
 
 cmake_minimum_required(VERSION 3.10)
-
 project(voxel_Engine VERSION 2.0)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCE_FILES
     test.cpp
     ../../src/HammerEngine.cpp
     ../../src/HammerUtility.cpp
     ../../src/HammerCamera.cpp
+    ../../src/HammerRect.cpp
     ../../src/HammerBuffers.cpp
     ../../src/HammerPipeline.cpp
 )
 
 find_package(Vulkan REQUIRED)
-find_package(glm REQUIRED)
-
+find_package(glm CONFIG REQUIRED)
 find_package(glfw3 REQUIRED)
 
 include_directories(
@@ -30,8 +32,10 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_compile_definitions(voxel_Engine PUBLIC GLM_ENABLE_EXPERIMENTAL)
 
 target_link_libraries(${PROJECT_NAME}
-    vulkan
+    PRIVATE
+    Vulkan::Vulkan
     glfw
+    glm::glm
 )
 
 if(WIN32 AND NOT MSVC)

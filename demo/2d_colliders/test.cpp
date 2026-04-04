@@ -76,5 +76,7 @@ int main() {
     mainTexture.reset();
     mainPipeline.reset();
 
+    Engine.cleanup();
+
     return EXIT_SUCCESS;
 }
