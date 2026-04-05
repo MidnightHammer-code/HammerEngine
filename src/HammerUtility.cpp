@@ -86,9 +86,6 @@ void HammerEngine::drawPassStart(){
     frameCount = 0;
 
     std::chrono::milliseconds totalFrameTime(0);
-
-    //vertexBufferSize = sizeof(Vertex) * vertices.size();
-    //indexBufferSize = sizeof(uint32_t) * indices.size();
 }
 
 void HammerEngine::updateFrameTimeStart(){

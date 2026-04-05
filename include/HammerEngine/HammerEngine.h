@@ -279,9 +279,6 @@ public:
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
 
-    VkDeviceSize vertexBufferSize;
-    VkDeviceSize indexBufferSize;
-
     VkBuffer stagingBuffer = VK_NULL_HANDLE;
     VkDeviceMemory stagingBufferMemory = VK_NULL_HANDLE;
     VkDeviceSize stagingBufferSize = 0;
