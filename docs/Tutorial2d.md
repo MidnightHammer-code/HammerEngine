@@ -87,12 +87,10 @@ In graphics programming graphics pipelines need to be configured to use effects 
 
 The shaders MUST be precompiled, the triangle mod is when you want to render the triangle normaly or only the wireframe (each 3 lines of a triangle), the render 2 side triangle mod determines if you want to see both sides of trianges most games only render 1 side.
 
-_Note_ Pipelines will use normal pointers in the futur !!!
-
 ```
 std::string vPath = "shaders/vert.spv";
 std::string fPath = "shaders/frag.spv";
-auto mainPipeline = std::make_unique<HammerPipeline>(
+HammerPipline* mainPipeline = HammerPipeline(
     Engine, vPath, fPath, 1, true
 );
 ```
