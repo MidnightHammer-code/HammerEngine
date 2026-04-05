@@ -56,6 +56,7 @@ We are looking for contributors! If you want to contribute to Hammer go to the i
 2. Extended physics/collision features.
 3. Separating the functions from HammerEngine.cpp into separate files.
 4. Add documentation, to help people learn Hammer Engine.
+5. Add more demo's to the demo/ folder.
 
 # How to use?
 
