@@ -1003,7 +1003,7 @@ HammerTexture::~HammerTexture() {
     vkDestroyImage(engine.device, image, nullptr);
     vkFreeMemory(engine.device, imageMemory, nullptr);
     
-    // Note: Descriptor Sets are usually freed automatically when the pool is destroyed,
+    // Note: Descriptor Sets are usually freed automatically when the pool is destroyed i think
 }
 
 
