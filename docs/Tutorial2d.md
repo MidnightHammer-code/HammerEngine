@@ -85,35 +85,29 @@ Engine.initVulkan();
 
 In graphics programming graphics pipelines need to be configured to use effects or for to put anything on the screen. HammerPipeline takes a few parameters: the Hammer instance, vertex shader path, fragment shader path, render triangle mod, render both sides of the triangle.
 
-The shaders MUST be precompiled, the triangle mod is when you want to render the triangle normaly or only the wireframe (each 3 lines of a triangle), the render 2 side triangle mod determines if you want to see both sides of trianges most games only render 1 side.
-
-_Note_ Pipelines will use normal pointers in the futur !!!
+The shaders MUST be precompiled using a SPIR-V compiler, the triangle mod is when you want to render the triangle normaly or only the wireframe (each 3 lines of a triangle), the render 2 side triangle mod determines if you want to see both sides of trianges most games only render 1 side.
 
 ```
 std::string vPath = "shaders/vert.spv";
 std::string fPath = "shaders/frag.spv";
-auto mainPipeline = std::make_unique<HammerPipeline>(
+HammerPipline* mainPipeline = HammerPipeline(
     Engine, vPath, fPath, 1, true
 );
 ```
 
-4.1 Loading a Texture
+### 4.1 Loading a Texture
 
-We use std::make_unique to manage the memory of our texture. We also specify a filter (like Nearest for crisp pixel art).
+To renderer anything we need to add a texture to the mesh. The mesh will be created later.
+We use pointers to manage the memory of our texture. We also specify a filter (like Nearest for crisp pixel art).
 
-`auto mainTexture = std::make_unique<HammerTexture>(Engine, "textures/texture.png", HammerTextureFilter::Nearest);`
+`HammerTexture* mainTexture = HammerTexture(Engine, "textures/texture.png", HammerTextureFilter::Nearest);`
 
-4.2 Creating a Pipeline
-
-The pipeline needs your vertex and fragment shaders.
-
-auto mainPipeline = std::make_unique<HammerPipeline>(Engine, "shaders/vert.spv", “shaders/frag.spv", 1, true);
-
-5. Creating a Mesh
+### 5. Creating a Mesh
 
 A Mesh is the actual object in your world. It requires three things: Vertices (points in space), Indices (the order to connect those points), and the Texture/Pipeline we created above.
 
-// Define a simple square
+The following code creates a quade. A quade has 4 points so there will be 4 vertex. Indices are the instruction on how to connecte them. If you are rendering both side of the triangles (See the pipeline section) the order does not really matter. (reverse them will change what side is renderer if you are not using the render 2 side triangle mod)
+```
 std::vector<Vertex> vertices = {
     {{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
     {{ 0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
@@ -121,11 +115,12 @@ std::vector<Vertex> vertices = {
     {{-0.5f,  0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}}
 };
 std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 };
+```
 
-// Add the mesh to the engine's list
+### 5.5 Adding giving the mesh to Hammer
 Engine.meshs.push_back(std::make_unique<HammerMesh>(Engine, mainPipeline.get(), mainTexture.get(), vertices, indices));
 
-6. The Main Loop
+### 6. The Main Loop
 
 Finally, we create the "heartbeat" of your application. This loop runs every frame until you close the window.
 
@@ -147,7 +142,7 @@ while (!glfwWindowShouldClose(Engine.window)) {
 
 Engine.drawPassEnd(); // Clean up GPU tasks
 
-7. Memory Cleanup
+### 7. Memory Cleanup
 
 Because we are working with C++ and Vulkan, we need to be responsible. Before the program ends, ensure you reset your unique pointers to destroy the Vulkan resources in the correct order.
 ```
