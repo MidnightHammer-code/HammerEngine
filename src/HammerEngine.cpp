@@ -426,51 +426,52 @@ void HammerMesh::createIndexBuffer(const std::vector<uint32_t>& indices) {
 }
 
 void HammerMesh::bindAndDraw(VkCommandBuffer commandBuffer, uint32_t currentFrame) {
+    if(this->draw){
+        if (pipeline == nullptr) return; 
+        if (texture == nullptr) return;
 
-    if (pipeline == nullptr) return; 
-    if (texture == nullptr) return;
+        if (texture->descriptorSet == VK_NULL_HANDLE) return;
 
-    if (texture->descriptorSet == VK_NULL_HANDLE) return;
+        if (currentFrame >= engine.globalDescriptorSets.size() || 
+            engine.globalDescriptorSets[currentFrame] == VK_NULL_HANDLE) {
+            return;
+        }
 
-    if (currentFrame >= engine.globalDescriptorSets.size() || 
-        engine.globalDescriptorSets[currentFrame] == VK_NULL_HANDLE) {
-        return;
+
+        VkBuffer vertexBuffers[] = {vertexBuffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+                                pipeline->pipelineLayout, 0, 1, 
+                                &engine.globalDescriptorSets[currentFrame], 0, nullptr);
+
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, 
+                                pipeline->pipelineLayout, 1, 1, 
+                                &texture->descriptorSet, 0, nullptr);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, position);
+        model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+        model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+        model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+        model = glm::scale(model, scale);
+
+        MeshPushConstants push{};
+        push.modelMatrix = model;
+
+        vkCmdPushConstants(
+            commandBuffer,
+            pipeline->pipelineLayout,
+            VK_SHADER_STAGE_VERTEX_BIT,
+            0,
+            sizeof(MeshPushConstants),
+            &push
+        );
+
+        vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
     }
-
-
-    VkBuffer vertexBuffers[] = {vertexBuffer};
-    VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, 
-                            pipeline->pipelineLayout, 0, 1, 
-                            &engine.globalDescriptorSets[currentFrame], 0, nullptr);
-
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, 
-                            pipeline->pipelineLayout, 1, 1, 
-                            &texture->descriptorSet, 0, nullptr);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, position);
-    model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-    model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-    model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-    model = glm::scale(model, scale);
-
-    MeshPushConstants push{};
-    push.modelMatrix = model;
-
-    vkCmdPushConstants(
-        commandBuffer,
-        pipeline->pipelineLayout,
-        VK_SHADER_STAGE_VERTEX_BIT,
-        0,
-        sizeof(MeshPushConstants),
-        &push
-    );
-
-    vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
 }
 
 
