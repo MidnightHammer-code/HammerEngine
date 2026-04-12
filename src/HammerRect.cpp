@@ -6,6 +6,7 @@
 
 #include "../include/HammerEngine/HammerRect.h"
 #include <cmath>
+#include <algorithm>
 
 // Rect cube noF
 
@@ -281,7 +282,7 @@ HammerRectCircle::HammerRectCircle(int X, int Y, int R) {
     this->r = R;
 }
 
-bool HammerRectCircle::HammerRectCollideCircleToCircle(HammerRectCircle rect) {
+bool HammerRectCircle::HammerRectCollideCircle(HammerRectCircle rect) {
     int dx = this->x - rect.x;
     int dy = this->y - rect.y;
 
@@ -299,7 +300,7 @@ HammerRectCircleF::HammerRectCircleF(float X, float Y, float R) {
     this->r = R;
 }
 
-bool HammerRectCircleF::HammerRectCollideCircleToCircleF(HammerRectCircleF rect) {
+bool HammerRectCircleF::HammerRectCollideCircleF(HammerRectCircleF rect) {
     float dx = this->x - rect.x;
     float dy = this->y - rect.y;
 
@@ -321,7 +322,7 @@ HammerRectSphere::HammerRectSphere(int X, int Y, int Z, int R) {
     this->r = R;
 }
 
-bool HammerRectSphere::HammerRectCollideSphereToSphere(HammerRectSphere rect) {
+bool HammerRectSphere::HammerRectCollideSphere(HammerRectSphere rect) {
     int dx = this->x - rect.x;
     int dy = this->y - rect.y;
     int dz = this->z - rect.z;
@@ -341,7 +342,7 @@ HammerRectSphereF::HammerRectSphereF(float X, float Y, float Z, float R) {
     this->r = R;
 }
 
-bool HammerRectSphereF::HammerRectCollideSphereToSphereF(HammerRectSphereF rect) {
+bool HammerRectSphereF::HammerRectCollideSphereF(HammerRectSphereF rect) {
     int dx = this->x - rect.x;
     int dy = this->y - rect.y;
     int dz = this->z - rect.z;
@@ -352,4 +353,54 @@ bool HammerRectSphereF::HammerRectCollideSphereToSphereF(HammerRectSphereF rect)
     int radiusSumSquared = radiusSum * radiusSum;
 
     return distanceSquared <= radiusSumSquared;
+}
+
+// Circle to Square Collisions demons, there all over the place fuck them up
+
+bool HammerRectCircle::HammerRectCollideSquare(HammerRectSquare rect) {
+    int closestX = std::max(rect.x, std::min(this->x, rect.x + rect.w));
+    int closestY = std::max(rect.y, std::min(this->y, rect.y + rect.h));
+
+    int dx = this->x - closestX;
+    int dy = this->y - closestY;
+
+    return (dx * dx + dy * dy) <= (this->r * this->r);
+}
+
+bool HammerRectCircleF::HammerRectCollideSquareF(HammerRectSquareF rect) {
+    float closestX = std::max(rect.x, std::min(this->x, rect.x + rect.w));
+    float closestY = std::max(rect.y, std::min(this->y, rect.y + rect.h));
+
+    float dx = this->x - closestX;
+    float dy = this->y - closestY;
+
+    return (dx * dx + dy * dy) <= (this->r * this->r);
+}
+
+// Sphere to Cube Collisions
+
+// good thing there is cheats, god mod is god mod.
+
+bool HammerRectSphere::HammerRectCollideCube(HammerRectCube cube) {
+    int closestX = std::max(cube.x, std::min(this->x, cube.x + cube.w));
+    int closestY = std::max(cube.y, std::min(this->y, cube.y + cube.h));
+    int closestZ = std::max(cube.z, std::min(this->z, cube.z + cube.d));
+
+    int dx = this->x - closestX;
+    int dy = this->y - closestY;
+    int dz = this->z - closestZ;
+
+    return (dx * dx + dy * dy + dz * dz) <= (this->r * this->r);
+}
+
+bool HammerRectSphereF::HammerRectCollideCubeF(HammerRectCubeF cube) {
+    float closestX = std::max(cube.x, std::min(this->x, cube.x + cube.w));
+    float closestY = std::max(cube.y, std::min(this->y, cube.y + cube.h));
+    float closestZ = std::max(cube.z, std::min(this->z, cube.z + cube.d));
+
+    float dx = this->x - closestX;
+    float dy = this->y - closestY;
+    float dz = this->z - closestZ;
+
+    return (dx * dx + dy * dy + dz * dz) <= (this->r * this->r);
 }
