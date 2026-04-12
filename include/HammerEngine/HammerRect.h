@@ -7,8 +7,6 @@
 #ifndef HAMMERRECT_H
 #define HAMMERRECT_H
 
-#include <vector>
-
 class HammerRectCube{
 public:
 	int x;
@@ -66,54 +64,54 @@ public:
 };
 
 
-// finish the Circle to Square and cube
-
 class HammerRectCircle{
 public:
-	int x;
-	int y;
+    int x;
+    int y;
+    int r;
 
-	int r;
-
-	bool HammerRectCollideCircleToCircle(HammerRectCircle rect);
-	HammerRectCircle(int X, int Y, int R);
+    bool HammerRectCollideCircle(HammerRectCircle rect);
+    bool HammerRectCollideSquare(HammerRectSquare rect);
+    HammerRectCircle(int X, int Y, int R);
 };
 
 class HammerRectCircleF{
 public:
-	float x;
-	float y;
+    float x;
+    float y;
+    float r;
 
-	float r;
-
-	bool HammerRectCollideCircleToCircleF(HammerRectCircleF rect);
-	HammerRectCircleF(float X, float Y, float R);
+    bool HammerRectCollideCircleF(HammerRectCircleF rect);
+    bool HammerRectCollideSquareF(HammerRectSquareF rect);
+    HammerRectCircleF(float X, float Y, float R);
 };
 
-///
+// this was such a shity proccess, fuck this shit
+// whoever has writen this shit need to stop drugs
+// idk if it works i hope, i am not fixing this shit
 
 class HammerRectSphere{
 public:
-	int x;
-	int y;
-	int z;
+    int x;
+    int y;
+    int z;
+    int r;
 
-	int r;
-
-	bool HammerRectCollideSphereToSphere(HammerRectSphere rect);
-	HammerRectSphere(int X, int Y, int Z, int R);
+    bool HammerRectCollideSphere(HammerRectSphere rect);
+    bool HammerRectCollideCube(HammerRectCube cube);
+    HammerRectSphere(int X, int Y, int Z, int R);
 };
 
 class HammerRectSphereF{
 public:
-	float x;
-	float y;
-	float z;
+    float x;
+    float y;
+    float z;
+    float r;
 
-	float r;
-
-	bool HammerRectCollideSphereToSphereF(HammerRectSphereF rect);
-	HammerRectSphereF(float X, float Y, float Z, float R);
+    bool HammerRectCollideSphereF(HammerRectSphereF rect);
+    bool HammerRectCollideCubeF(HammerRectCubeF cube);
+    HammerRectSphereF(float X, float Y, float Z, float R);
 };
 
 #endif
