@@ -9,12 +9,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCE_FILES
     test.cpp
-    ../../src/HammerEngine.cpp
-    ../../src/HammerUtility.cpp
-    ../../src/HammerCamera.cpp
-    ../../src/HammerRect.cpp
-    ../../src/HammerBuffers.cpp
-    ../../src/HammerPipeline.cpp
+    ../../src/engine.cpp
+    ../../src/utility.cpp
+    ../../src/camera.cpp
+    ../../src/rect.cpp
+    ../../src/buffers.cpp
+    ../../src/pipeline.cpp
 )
 
 find_package(Vulkan REQUIRED)
