@@ -244,6 +244,8 @@ public:
 
     void updateFrameTimeStart();
 
+    void removeMeshRenderer(int index);
+
     double currentTime = glfwGetTime();
     std::chrono::time_point<std::chrono::high_resolution_clock> start;
 
