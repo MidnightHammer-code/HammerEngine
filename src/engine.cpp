@@ -258,6 +258,16 @@ void HammerEngine::recreateSwapChain() {
     createFramebuffers();
 }
 
+void HammerEngine::removeMeshRenderer(int index){
+    if(index > meshs.size() || index > 0){
+        std::cout << "Warning,Trying to remove mesh from renderer with index out of range !!!\n";
+        return;
+    }
+    HammerMesh* deleteMeshPtr = meshs[index];
+    delete deleteMeshPtr;
+    std::swap(meshs[index], meshs.back());
+    meshs.pop_back();
+}
 
 HammerModel::HammerModel(const std::string& path){
         tinyobj::attrib_t attrib;
