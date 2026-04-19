@@ -118,7 +118,7 @@ std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 };
 ```
 
 ### 5.5 Adding giving the mesh to Hammer
-Engine.meshs.push_back(std::make_unique<HammerMesh>(Engine, mainPipeline.get(), mainTexture.get(), vertices, indices));
+`Engine.meshs.push_back(std::make_unique<HammerMesh>(Engine, mainPipeline.get(), mainTexture.get(), vertices, indices));`
 
 ### 6. The Main Loop
 
