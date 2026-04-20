@@ -13,7 +13,7 @@ The #1 goal of HammerEngine is it's performance on low-end machines. It out-perf
 
 # Cross-platform
 
-Hammer supports for all major linux distro, windows (comming soon) and chromebook.
+Hammer supports for all major linux distro, windows (In testing) and chromebook.
 
 # What does Hammer support?
 
