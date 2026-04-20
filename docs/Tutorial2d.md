@@ -124,6 +124,7 @@ std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 };
 
 Finally, we create the "heartbeat" of your application. This loop runs every frame until you close the window.
 
+```
 Engine.drawPassStart(); // Prepare the GPU for drawing
 
 while (!glfwWindowShouldClose(Engine.window)) {
@@ -141,6 +142,7 @@ while (!glfwWindowShouldClose(Engine.window)) {
 }
 
 Engine.drawPassEnd(); // Clean up GPU tasks
+```
 
 ### 7. Memory Cleanup
 
