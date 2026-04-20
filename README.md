@@ -23,7 +23,7 @@ Collision System: Includes a functional, simple collision detection system.
 
 Developer Friendly: Designed for rapid prototyping without sacrificing performance.
 
-Easy to load 3d models: Uses tinyobjloader to load .obj files discards any vertex that is duplicated.
+Easy to load 3d models: Using tinyobjloader to load .obj files discards any vertex and index that is duplicated.
 
 <img width="632" height="706" alt="image" src="https://github.com/user-attachments/assets/157a91fb-d69d-4deb-9de6-efdec45e3402" />
 <img width="632" height="706" alt="Screenshot from 2026-03-18 09-32-32" src="https://github.com/user-attachments/assets/30bb86b6-7093-4a84-9413-d55ffb2b04e6" />
