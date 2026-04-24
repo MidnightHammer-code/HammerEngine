@@ -100,12 +100,6 @@ std::array<VkVertexInputAttributeDescription, 3> Vertex::getAttributeDescription
     return attributeDescriptions;
 }
 
-struct UniformBufferObject {
-    alignas(16) glm::mat4 model;
-    alignas(16) glm::mat4 view;
-    alignas(16) glm::mat4 proj;
-};
-
 void HammerEngine::framebufferResizeCallback(GLFWwindow* window, int width, int height) {
     auto app = reinterpret_cast<HammerEngine*>(glfwGetWindowUserPointer(window));
     app->framebufferResized = true;
@@ -776,7 +770,7 @@ void HammerEngine::createDescriptorSetLayout() {
     uboLayoutBinding.binding = 0;
     uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
     uboLayoutBinding.descriptorCount = 1;
-    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
 
     VkDescriptorSetLayoutCreateInfo globalLayoutInfo{};
     globalLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -1374,6 +1368,13 @@ void HammerEngine::updateUniformBuffer(uint32_t currentImage) {
 
     glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     ubo.view = view;
+    
+    float radius = 50.0f;
+    ubo.lightPosition = glm::vec3(
+    radius * cos(time), 
+    5.0f,               // Keep height constant
+    radius * sin(time)
+);
 
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }

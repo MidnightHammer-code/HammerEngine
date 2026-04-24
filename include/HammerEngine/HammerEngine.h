@@ -25,7 +25,24 @@
 
 #include "../../lib/tiny_obj_loader.h"
 
+struct UniformBufferObject {
+    alignas(16) glm::mat4 model;
+    alignas(16) glm::mat4 view;
+    alignas(16) glm::mat4 proj;
 
+    // Use 0.0 - 1.0 range
+    // Ambient: White at 20% intensity
+    alignas(16) glm::vec4 ambientLightColor{1.0f, 1.0f, 1.0f, 0.2f};
+
+    // Light Position
+    alignas(16) glm::vec3 lightPosition{20.0f, 5.0f, 2.0f}; 
+    
+    // PADDING: This ensures lightColor starts on a 16-byte boundary
+    float padding; 
+
+    // Light Color: Pure white at full intensity
+    alignas(16) glm::vec4 lightColor{1.0f, 1.0f, 1.0f, 1.0f};
+};
 
 struct Vertex {
     glm::vec3 pos;
