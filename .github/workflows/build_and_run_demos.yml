@@ -22,10 +22,25 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake libvulkan-dev vulkan-tools vulkan-validationlayers spirv-tools mesa-vulkan-drivers libstb-dev libglm-dev libglfw3-dev
+        sudo apt-get install -y build-essential cmake \
+          libvulkan-dev vulkan-tools \
+          vulkan-validationlayers-dev vulkan-validationlayers \
+          spirv-tools mesa-vulkan-drivers libstb-dev libglm-dev libglfw3-dev \
+          xvfb libx11-dev
 
     - name: Build and Run Each Demo
       run: |
+        # Dynamically find the Vulkan driver to avoid arch-mismatch (x86 vs ARM)
+        # This finds the lvp (Lavapipe) driver regardless of architecture
+        LVP_PATH=$(find /usr/share/vulkan/icd.d/ -name "lvp_icd.*.json" | head -n 1)
+        export VK_DRIVER_FILES=$LVP_PATH
+        
+        # Tell the Vulkan Loader where validation layers are kept
+        export VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d
+        
+        # Optional: Force validation layers on even if the app doesn't request them
+        # export VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation
+
         for demo_dir in demo/*/; do
           echo "----------------------------------------"
           echo "Processing: $demo_dir"
@@ -40,16 +55,12 @@ jobs:
           EXEC=$(find . -maxdepth 1 -type f -executable ! -name "CMake*" ! -name "Makefile")
           
           if [ -n "$EXEC" ]; then
-            echo "Running $EXEC..."
+            echo "Running $EXEC with Lavapipe and Validation Layers..."
             
-            # VK_ICD_FILENAMES/VK_LOADER_DRIVERS_SELECT: Forces the use of Lavapipe (CPU Vulkan)
-            # xvfb-run: Provides the virtual X server
-            # We remove the strict exit code check so if it finishes in 1s, it passes.
-            export VK_DRIVER_FILES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json
-            
+            # xvfb-run provides the X server
+            # timeout 10s handles the game loop
             timeout --preserve-status 10s xvfb-run --auto-servernum "$EXEC" || {
               EXIT_STATUS=$?
-              # If it timed out (124), that's fine. If it crashed (anything else), we check logs.
               if [ $EXIT_STATUS -ne 124 ] && [ $EXIT_STATUS -ne 0 ]; then
                 echo "::error::$EXEC crashed with exit code $EXIT_STATUS"
                 exit 1
