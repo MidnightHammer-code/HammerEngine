@@ -23,8 +23,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential cmake \
-          libvulkan-dev vulkan-tools \
-          vulkan-validationlayers-dev vulkan-utility-libraries-dev \
+          libvulkan-dev vulkan-tools vulkan-utility-libraries-dev \
           spirv-tools mesa-vulkan-drivers libstb-dev libglm-dev libglfw3-dev \
           xvfb libx11-dev
 
