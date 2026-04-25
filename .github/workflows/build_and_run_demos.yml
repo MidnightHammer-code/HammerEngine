@@ -22,40 +22,41 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        # Installs build tools and graphics libraries for the current architecture
-        sudo apt-get install -y build-essential cmake libvulkan-dev vulkan-tools vulkan-validationlayers spirv-tools libstb-dev libglm-dev libglfw3-dev
+        sudo apt-get install -y build-essential cmake libvulkan-dev vulkan-tools spirv-tools mesa-vulkan-drivers libstb-dev libglm-dev libglfw3-dev
 
     - name: Build and Run Each Demo
       run: |
         for demo_dir in demo/*/; do
-          echo "========================================"
-          echo "Building Demo: $demo_dir on ${{ matrix.os }}"
-          echo "========================================"
+          echo "----------------------------------------"
+          echo "Processing: $demo_dir"
+          echo "----------------------------------------"
           
           cd "$demo_dir"
+          mkdir -p build && cd build
           
-          # Create build directory and compile using CMake
-          mkdir -p build
-          cd build
-          cmake ..
-          make
+          if ! cmake ..; then exit 1; fi
+          if ! make; then exit 1; fi
           
-          # Locate the compiled executable
           EXEC=$(find . -maxdepth 1 -type f -executable ! -name "CMake*" ! -name "Makefile")
           
           if [ -n "$EXEC" ]; then
-            echo "Found executable: $EXEC"
+            echo "Running $EXEC..."
             
-            # xvfb-run creates a virtual display so the app doesn't crash headlessly.
-            # timeout 5s ensures the CI doesn't hang on the game loop.
-            echo "Running $EXEC in headless mode..."
-            timeout 5s xvfb-run --auto-servernum "$EXEC" || true
+            # VK_ICD_FILENAMES/VK_LOADER_DRIVERS_SELECT: Forces the use of Lavapipe (CPU Vulkan)
+            # xvfb-run: Provides the virtual X server
+            # We remove the strict exit code check so if it finishes in 1s, it passes.
+            export VK_DRIVER_FILES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json
             
-            echo "Successfully built and test-ran $EXEC"
-          else
-            echo "::warning::No executable found in ${demo_dir}build"
+            timeout --preserve-status 10s xvfb-run --auto-servernum "$EXEC" || {
+              EXIT_STATUS=$?
+              # If it timed out (124), that's fine. If it crashed (anything else), we check logs.
+              if [ $EXIT_STATUS -ne 124 ] && [ $EXIT_STATUS -ne 0 ]; then
+                echo "::error::$EXEC crashed with exit code $EXIT_STATUS"
+                exit 1
+              fi
+            }
+            echo "Execution of $EXEC finished successfully."
           fi
           
-          # Reset path for the next iteration of the loop
           cd "${GITHUB_WORKSPACE}"
         done
