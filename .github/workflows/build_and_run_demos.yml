@@ -29,23 +29,18 @@ jobs:
 
     - name: Build and Run Each Demo
       run: |
-        # 1. FORCE MESA SOFTWARE RENDERING
-        # Instead of just finding the file, we tell Mesa directly to use Lavapipe.
-        export VK_LOADER_LAYERS_ENABLE=*validation*
+        # 1. SET VULKAN PATHS DIRECTLY
+        # Instead of pointing to a specific FILE, we point to the DIRECTORIES.
+        # This lets the loader decide which JSON matches the current architecture.
+        export VK_ICD_FILENAMES="" # Clear this to avoid conflicts
+        export VK_DRIVER_FILES=""  # Clear this to avoid conflicts
+        
+        # Point to the folders containing the manifests
+        export VK_ICD_SEARCH_PATH=/usr/share/vulkan/icd.d:/etc/vulkan/icd.d
         export VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d
         
-        # 2. BROAD SEARCH FOR ICD
-        # We search in all standard locations for the Lavapipe (lvp) driver.
-        # This handles /usr/share/vulkan/icd.d/ AND /etc/vulkan/icd.d/
-        LVP_PATH=$(find /usr/share/vulkan/icd.d/ /etc/vulkan/icd.d/ /usr/lib/*/vulkan/icd.d/ -name "lvp_icd.*.json" 2>/dev/null | head -n 1)
-        
-        if [ -z "$LVP_PATH" ]; then
-          echo "::warning::Lavapipe driver not found via find. Trying default path."
-          LVP_PATH="/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
-        fi
-
-        export VK_ICD_FILENAMES="$LVP_PATH"
-        export VK_DRIVER_FILES="$LVP_PATH"
+        # Force the software rasterizer
+        export VK_LOADER_LAYERS_ENABLE=*validation*
 
         for demo_dir in demo/*/; do
           echo "----------------------------------------"
@@ -61,10 +56,10 @@ jobs:
           EXEC=$(find . -maxdepth 1 -type f -executable ! -name "CMake*" ! -name "Makefile")
           
           if [ -n "$EXEC" ]; then
-            echo "Running $EXEC with Driver: $LVP_PATH"
+            echo "Running $EXEC..."
             
-            # xvfb-run provides the virtual display
-            # MESA_VK_DEVICE_SELECT forces the software device (CPU)
+            # Use xvfb-run for virtual display
+            # MESA_VK_DEVICE_SELECT=vulkan-swrast is the magic key for Mesa 22+
             set +e
             MESA_VK_DEVICE_SELECT=vulkan-swrast timeout --preserve-status 10s xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" "$EXEC"
             EXIT_STATUS=$?
@@ -74,8 +69,7 @@ jobs:
               echo "Execution of $EXEC finished successfully (Exit Code: $EXIT_STATUS)."
             else
               echo "::error::$EXEC CRASHED with exit code $EXIT_STATUS"
-              # Final debug check: show the loader where it's looking if it fails
-              export VK_LOADER_DEBUG=all
+              # Final debug check
               vulkaninfo --summary || true
               exit 1
             fi
