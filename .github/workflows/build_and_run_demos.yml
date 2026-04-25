@@ -1,4 +1,4 @@
-name: Build and Run Demos (x86 & ARM64)
+name: Build Demos (x86 & ARM64)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  build-and-run:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -22,58 +22,33 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake libvulkan1 \
-          libvulkan-dev vulkan-tools vulkan-validationlayers \
-          spirv-tools mesa-vulkan-drivers libstb-dev libglm-dev libglfw3-dev \
-          xvfb libx11-dev
+        # Installs build tools and graphics headers for compilation
+        sudo apt-get install -y build-essential cmake libvulkan-dev \
+          vulkan-validationlayers spirv-tools libstb-dev libglm-dev libglfw3-dev
 
-    - name: Build and Run Each Demo
+    - name: Build Each Demo
       run: |
-        # 1. SET VULKAN PATHS DIRECTLY
-        # Instead of pointing to a specific FILE, we point to the DIRECTORIES.
-        # This lets the loader decide which JSON matches the current architecture.
-        export VK_ICD_FILENAMES="" # Clear this to avoid conflicts
-        export VK_DRIVER_FILES=""  # Clear this to avoid conflicts
-        
-        # Point to the folders containing the manifests
-        export VK_ICD_SEARCH_PATH=/usr/share/vulkan/icd.d:/etc/vulkan/icd.d
-        export VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d
-        
-        # Force the software rasterizer
-        export VK_LOADER_LAYERS_ENABLE=*validation*
-
         for demo_dir in demo/*/; do
           echo "----------------------------------------"
-          echo "Processing: $demo_dir"
+          echo "Building: $demo_dir"
           echo "----------------------------------------"
           
           cd "$demo_dir"
           mkdir -p build && cd build
           
-          if ! cmake ..; then exit 1; fi
-          if ! make; then exit 1; fi
-          
-          EXEC=$(find . -maxdepth 1 -type f -executable ! -name "CMake*" ! -name "Makefile")
-          
-          if [ -n "$EXEC" ]; then
-            echo "Running $EXEC..."
-            
-            # Use xvfb-run for virtual display
-            # MESA_VK_DEVICE_SELECT=vulkan-swrast is the magic key for Mesa 22+
-            set +e
-            MESA_VK_DEVICE_SELECT=vulkan-swrast timeout --preserve-status 10s xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" "$EXEC"
-            EXIT_STATUS=$?
-            set -e
-
-            if [ $EXIT_STATUS -eq 0 ] || [ $EXIT_STATUS -eq 124 ] || [ $EXIT_STATUS -eq 143 ]; then
-              echo "Execution of $EXEC finished successfully (Exit Code: $EXIT_STATUS)."
-            else
-              echo "::error::$EXEC CRASHED with exit code $EXIT_STATUS"
-              # Final debug check
-              vulkaninfo --summary || true
-              exit 1
-            fi
+          # Run CMake and Make. If either fails, the Action will stop.
+          if ! cmake ..; then
+            echo "::error::CMake failed in $demo_dir"
+            exit 1
           fi
           
+          if ! make; then
+            echo "::error::Make failed in $demo_dir"
+            exit 1
+          fi
+          
+          echo "Successfully built $demo_dir"
+          
+          # Return to root for the next iteration
           cd "${GITHUB_WORKSPACE}"
         done
