@@ -79,23 +79,32 @@ VkVertexInputBindingDescription Vertex::getBindingDescription() {
     return bindingDescription;
 }
 
-std::array<VkVertexInputAttributeDescription, 3> Vertex::getAttributeDescriptions() {
-    std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
+std::array<VkVertexInputAttributeDescription, 4> Vertex::getAttributeDescriptions() {
+    std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
 
+    // 0: Position
     attributeDescriptions[0].binding = 0;
     attributeDescriptions[0].location = 0;
     attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     attributeDescriptions[0].offset = offsetof(Vertex, pos);
 
+    // 1: Color
     attributeDescriptions[1].binding = 0;
     attributeDescriptions[1].location = 1;
     attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
     attributeDescriptions[1].offset = offsetof(Vertex, color);
 
+    // 2: TexCoord
     attributeDescriptions[2].binding = 0;
     attributeDescriptions[2].location = 2;
     attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
     attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
+
+    // 3: Normal
+    attributeDescriptions[3].binding = 0;
+    attributeDescriptions[3].location = 3;
+    attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
+    attributeDescriptions[3].offset = offsetof(Vertex, normal);
 
     return attributeDescriptions;
 }
@@ -264,59 +273,73 @@ void HammerEngine::removeMeshRenderer(int index){
 }
 
 HammerModel::HammerModel(const std::string& path){
-        tinyobj::attrib_t attrib;
-        std::vector<tinyobj::shape_t> shapes;
-        std::vector<tinyobj::material_t> materials;
-        std::string warn, err;
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string warn, err;
 
-        std::string warn_and_err; 
-        bool ret = tinyobj::LoadObj(
-            &attrib, 
-            &shapes, 
-            &materials, 
-            &warn_and_err, 
-            path.c_str(), 
-            nullptr,   
-            true
-        );
+    std::string warn_and_err; 
+    bool ret = tinyobj::LoadObj(
+        &attrib, 
+        &shapes, 
+        &materials, 
+        &warn_and_err, 
+        path.c_str(), 
+        nullptr,   
+        true
+    );
 
-        if (!ret) {
-            throw std::runtime_error("HammerEngine: Failed to load OBJ: " + warn_and_err);
-        }
+    if (!ret) {
+        throw std::runtime_error("HammerEngine: Failed to load OBJ: " + warn_and_err);
+    }
 
-        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+    std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
-        for (const auto& shape : shapes) {
-            for (const auto& index : shape.mesh.indices) {
-                Vertex vertex{};
+    // ... [existing tinyobj setup code] ...
 
-                // Position
-                vertex.pos = {
-                    attrib.vertices[3 * index.vertex_index + 0],
-                    attrib.vertices[3 * index.vertex_index + 1],
-                    attrib.vertices[3 * index.vertex_index + 2]
+    for (const auto& shape : shapes) {
+        for (const auto& index : shape.mesh.indices) {
+            Vertex vertex{};
+
+            // Position
+            vertex.pos = {
+                attrib.vertices[3 * index.vertex_index + 0],
+                attrib.vertices[3 * index.vertex_index + 1],
+                attrib.vertices[3 * index.vertex_index + 2]
+            };
+
+            // UV Coordinates
+            if (index.texcoord_index >= 0) {
+                vertex.texCoord = {
+                    attrib.texcoords[2 * index.texcoord_index + 0],
+                    1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
                 };
-
-                // UV Coordinates (with Vulkan Y-flip)
-                if (index.texcoord_index >= 0) {
-                    vertex.texCoord = {
-                        attrib.texcoords[2 * index.texcoord_index + 0],
-                        1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-                    };
-                }
-
-                vertex.color = {1.0f, 1.0f, 1.0f};
-
-                // Deduplication: only add vertex if it's new
-                if (uniqueVertices.count(vertex) == 0) {
-                    uniqueVertices[vertex] = static_cast<uint32_t>(vertexData.size());
-                    vertexData.push_back(vertex);
-                }
-
-                indexData.push_back(uniqueVertices[vertex]);
             }
+
+            // Normals
+            if (index.normal_index >= 0) {
+                vertex.normal = {
+                    attrib.normals[3 * index.normal_index + 0],
+                    attrib.normals[3 * index.normal_index + 1],
+                    attrib.normals[3 * index.normal_index + 2]
+                };
+            } else {
+                // Fallback if the OBJ file lacks normal data
+                vertex.normal = {0.0f, 1.0f, 0.0f}; 
+            }
+
+            vertex.color = {1.0f, 1.0f, 1.0f};
+
+            // Deduplication: only add vertex if it's new
+            if (uniqueVertices.count(vertex) == 0) {
+                uniqueVertices[vertex] = static_cast<uint32_t>(vertexData.size());
+                vertexData.push_back(vertex);
+            }
+
+            indexData.push_back(uniqueVertices[vertex]);
         }
     }
+}
 
 
 void HammerEngine::addMeshRenderer(HammerMesh* mesh) {
@@ -1369,12 +1392,12 @@ void HammerEngine::updateUniformBuffer(uint32_t currentImage) {
     glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     ubo.view = view;
     
-    float radius = 50.0f;
+    float radius = 5.0f;
     ubo.lightPosition = glm::vec3(
-    radius * cos(time), 
-    5.0f,               // Keep height constant
-    radius * sin(time)
-);
+        radius * cos(time), 
+        5.0f,               // Keep height constant
+        radius * sin(time)
+    );
 
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }

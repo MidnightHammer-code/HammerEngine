@@ -1,7 +1,7 @@
 #version 450
 
 layout(set = 0, binding = 0) uniform UniformBufferObject {
-    mat4 model; // Add this back so offsets match!
+    mat4 model;
     mat4 view;
     mat4 proj;
     vec4 ambientLightColor;
@@ -14,13 +14,13 @@ layout(set = 1, binding = 0) uniform sampler2D texSampler;
 layout(location = 0) in vec3 fragColor;
 layout(location = 1) in vec2 fragTexCoord;
 layout(location = 2) in vec3 fragWorldPos;
+layout(location = 3) in vec3 fragNormal; // NEW: Receives interpolated normal
 
 layout(location = 0) out vec4 outColor;
 
 void main() {
-    vec3 dx = dFdx(fragWorldPos);
-    vec3 dy = dFdy(fragWorldPos);
-    vec3 normal = -normalize(cross(dx, dy));
+    // NEW: Normalize the interpolated vector
+    vec3 normal = normalize(fragNormal);
     
     vec3 lightDir = normalize(ubo.lightPosition - fragWorldPos);
     

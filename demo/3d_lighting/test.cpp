@@ -41,8 +41,6 @@ int main() {
 
     // Allocate mesh with new and push the raw pointer to the engine
     HammerMesh* myMesh1 = new HammerMesh(Engine, mainPipeline, dirtTexture, model.vertexData, model.indexData);
-
-    myMesh1->position.x = 10;
     
     Engine.meshs.push_back(myMesh1);
 
