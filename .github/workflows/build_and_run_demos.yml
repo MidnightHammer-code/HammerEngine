@@ -60,7 +60,7 @@ jobs:
             # timeout 10s handles the game loop
             timeout --preserve-status 10s xvfb-run --auto-servernum "$EXEC" || {
               EXIT_STATUS=$?
-              if [ $EXIT_STATUS -ne 124 ] && [ $EXIT_STATUS -ne 0 ]; then
+              if [ $EXIT_STATUS -eq 0 ] || [ $EXIT_STATUS -eq 124 ] || [ $EXIT_STATUS -eq 143 ]; then
                 echo "::error::$EXEC crashed with exit code $EXIT_STATUS"
                 exit 1
               fi
