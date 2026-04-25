@@ -23,7 +23,7 @@ jobs:
       run: |
         sudo apt-get update
         # Installs build tools and graphics libraries for the current architecture
-        sudo apt-get install -y cmake build-essential xvfb libvulkan-dev libglfw3-dev libglm-dev
+        build-essential cmake libvulkan-dev vulkan-tools vulkan-validationlayers spirv-tools libstb-dev libglm-dev libglfw3-dev
 
     - name: Build and Run Each Demo
       run: |
