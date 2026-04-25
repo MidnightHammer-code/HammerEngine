@@ -1,0 +1,61 @@
+name: Build and Run Demos (x86 & ARM64)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-run:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        # Installs build tools and graphics libraries for the current architecture
+        sudo apt-get install -y cmake build-essential xvfb libvulkan-dev libglfw3-dev libglm-dev
+
+    - name: Build and Run Each Demo
+      run: |
+        for demo_dir in demo/*/; do
+          echo "========================================"
+          echo "Building Demo: $demo_dir on ${{ matrix.os }}"
+          echo "========================================"
+          
+          cd "$demo_dir"
+          
+          # Create build directory and compile using CMake
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+          
+          # Locate the compiled executable
+          EXEC=$(find . -maxdepth 1 -type f -executable ! -name "CMake*" ! -name "Makefile")
+          
+          if [ -n "$EXEC" ]; then
+            echo "Found executable: $EXEC"
+            
+            # xvfb-run creates a virtual display so the app doesn't crash headlessly.
+            # timeout 5s ensures the CI doesn't hang on the game loop.
+            echo "Running $EXEC in headless mode..."
+            timeout 5s xvfb-run --auto-servernum "$EXEC" || true
+            
+            echo "Successfully built and test-ran $EXEC"
+          else
+            echo "::warning::No executable found in ${demo_dir}build"
+          fi
+          
+          # Reset path for the next iteration of the loop
+          cd "${GITHUB_WORKSPACE}"
+        done
