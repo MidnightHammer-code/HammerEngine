@@ -29,19 +29,23 @@ jobs:
 
     - name: Build and Run Each Demo
       run: |
-        # 1. ARCH-AGNOSTIC DRIVER DETECTION
-        # We look for the Lavapipe driver and set BOTH variables for maximum compatibility.
-        LVP_PATH=$(find /usr/share/vulkan/icd.d/ -name "lvp_icd.*.json" | head -n 1)
-        
-        export VK_DRIVER_FILES="$LVP_PATH"
-        export VK_ICD_FILENAMES="$LVP_PATH"
-        
-        # 2. VALIDATION LAYERS
+        # 1. FORCE MESA SOFTWARE RENDERING
+        # Instead of just finding the file, we tell Mesa directly to use Lavapipe.
+        export VK_LOADER_LAYERS_ENABLE=*validation*
         export VK_LAYER_PATH=/usr/share/vulkan/explicit_layer.d
         
-        # 3. GRAPHICS EMULATION
-        # Tell Mesa to use software rendering (llvmpipe/lavapipe)
-        export GALLIUM_DRIVER=llvmpipe
+        # 2. BROAD SEARCH FOR ICD
+        # We search in all standard locations for the Lavapipe (lvp) driver.
+        # This handles /usr/share/vulkan/icd.d/ AND /etc/vulkan/icd.d/
+        LVP_PATH=$(find /usr/share/vulkan/icd.d/ /etc/vulkan/icd.d/ /usr/lib/*/vulkan/icd.d/ -name "lvp_icd.*.json" 2>/dev/null | head -n 1)
+        
+        if [ -z "$LVP_PATH" ]; then
+          echo "::warning::Lavapipe driver not found via find. Trying default path."
+          LVP_PATH="/usr/share/vulkan/icd.d/lvp_icd.x86_64.json"
+        fi
+
+        export VK_ICD_FILENAMES="$LVP_PATH"
+        export VK_DRIVER_FILES="$LVP_PATH"
 
         for demo_dir in demo/*/; do
           echo "----------------------------------------"
@@ -59,20 +63,20 @@ jobs:
           if [ -n "$EXEC" ]; then
             echo "Running $EXEC with Driver: $LVP_PATH"
             
+            # xvfb-run provides the virtual display
+            # MESA_VK_DEVICE_SELECT forces the software device (CPU)
             set +e
-            # --auto-servernum ensures we don't conflict with other X servers
-            # --server-args provides a fake screen size/depth
-            timeout --preserve-status 10s xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" "$EXEC"
+            MESA_VK_DEVICE_SELECT=vulkan-swrast timeout --preserve-status 10s xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" "$EXEC"
             EXIT_STATUS=$?
             set -e
 
             if [ $EXIT_STATUS -eq 0 ] || [ $EXIT_STATUS -eq 124 ] || [ $EXIT_STATUS -eq 143 ]; then
               echo "Execution of $EXEC finished successfully (Exit Code: $EXIT_STATUS)."
             else
-              # Print Vulkan info on failure to help debug why the driver wasn't found
               echo "::error::$EXEC CRASHED with exit code $EXIT_STATUS"
-              echo "Vulkan Info Status:"
-              vulkaninfo --summary || echo "vulkaninfo failed"
+              # Final debug check: show the loader where it's looking if it fails
+              export VK_LOADER_DEBUG=all
+              vulkaninfo --summary || true
               exit 1
             fi
           fi
