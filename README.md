@@ -1,5 +1,5 @@
 # Hammer
-HammerEngine is an open source Engine using Vulkan as backend.
+Hammer is an open source Engine using Vulkan as backend.
 It supports simple collision detection, there is an example in the demo folder.
 
 [Showoff.webm](https://github.com/user-attachments/assets/d3d87ad2-bde6-4431-944c-7280afff7d88)
@@ -9,7 +9,7 @@ The goal of the Hammer Engine is combining ease of use and the speed of Vulkan t
 
 # The performance of Hammer
 
-The #1 goal of HammerEngine is it's performance on low-end machines. It out-performs many other engines while remaining compatable with as many machines as possible.
+The #1 goal of Hammer is it's performance on low-end machines. It out-performs many other engines while remaining compatable with as many machines as possible.
 
 # Cross-platform
 
@@ -56,10 +56,10 @@ We are looking for contributors! If you want to contribute to Hammer go to the i
 
 1. Optimizing the Engine even more for low-end machines.
 2. Extended physics/collision features.
-3. Separating the functions from HammerEngine.cpp into separate files.
+3. Separating the functions from Hammer.cpp into separate files.
 4. Add documentation, to help people learn Hammer Engine.
 5. Add more demo's to the demo/ folder.
 
 # How to use?
 
-The Hammer Engine tutorial is being made right now and should be finished very soon. you can find it at https://github.com/MidnightHammer-code/HammerEngine/tree/main/docs.
+The Hammer Engine tutorial is being made right now and should be finished very soon. you can find it at https://github.com/MidnightHammer-code/Hammer/tree/main/docs.
