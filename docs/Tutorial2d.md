@@ -118,6 +118,9 @@ std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 };
 ```
 
 ### 5.5 Adding giving the mesh to Hammer
+
+uh no, there is a function to do this i.g some where
+
 `Engine.meshs.push_back(std::make_unique<HammerMesh>(Engine, mainPipeline.get(), mainTexture.get(), vertices, indices));`
 
 ### 6. The Main Loop
