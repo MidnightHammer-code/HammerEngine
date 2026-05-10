@@ -52,7 +52,7 @@ We are currently looking for contributors to help establish build instructions f
 For windows please check if the current build instructions work.
 
 # Want to contribute?
-We are looking for contributors! If you want to contribute to Hammer go to the issues tab pick an issue and create a fix for it. If you have an idea for a new feature you can create an issue with the label New feature or implement it and create a pull request. We are especially looking for help with:
+We are looking for contributors! If you want to contribute to Hammer go to the issues tab pick an issue and create a fix for it. Or if you find a bug please report it in the issue tab. If you have an idea for a new feature you can create an issue with the label New feature or implement it and create a pull request. We are especially looking for help with:
 
 1. Optimizing the Engine even more for low-end machines.
 2. Extended physics/collision features.
